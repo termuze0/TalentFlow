@@ -1,0 +1,515 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TalentFlow - Django Job Portal</title>
+    <link rel="stylesheet" href="{% static 'landing.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="container">
+        <nav class="navbar">
+          <div class="logo">
+            <span class="logo-icon"><i class="fas fa-network-wired"></i></span>
+            <span class="logo-text">TalentFlow</span>
+          </div>
+          <ul class="nav-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#solutions">Solutions</a></li>
+            <li><a href="#testimonials">Testimonials</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#" class="btn btn-outline">Employer Login</a></li>
+            <li><a href="#" class="btn btn-outline">Post a Job</a></li>
+          </ul>
+          <div class="mobile-menu">
+            <i class="fas fa-bars"></i>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <h1>Connecting Ambition with Opportunity</h1>
+          <p class="subtitle">
+            TalentFlow is a modern hiring platform designed to streamline
+            recruitment and connect top talent with the right
+            opportunities—quickly and efficiently.
+          </p>
+
+          <div class="cta-buttons">
+            <a href="#" class="btn btn-primary btn-large">Start Hiring</a>
+            <a href="#" class="btn btn-secondary btn-large">Explore Jobs</a>
+          </div>
+          <div class="trust-badges">
+            <div class="trust-item">
+              <i class="fas fa-check-circle"></i>
+              <span>500+ Companies</span>
+            </div>
+            <div class="trust-item">
+              <i class="fas fa-check-circle"></i>
+              <span>50,000+ Candidates</span>
+            </div>
+            <div class="trust-item">
+              <i class="fas fa-check-circle"></i>
+              <span>95% Satisfaction</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-image">
+          <img
+            src="https://images.unsplash.com/photo-1521791136064-7986c2920216?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80"
+            alt="Hiring Process"
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </section>
+
+    <section class="partners-section">
+      <div class="container">
+        <p class="partners-title">Trusted by innovative companies worldwide</p>
+        <div class="partners-grid">
+          <img
+            src="https://via.placeholder.com/150x60?text=Company+1"
+            alt="Company Logo"
+            loading="lazy"
+          />
+          <img
+            src="https://via.placeholder.com/150x60?text=Company+2"
+            alt="Company Logo"
+            loading="lazy"
+          />
+          <img
+            src="https://via.placeholder.com/150x60?text=Company+3"
+            alt="Company Logo"
+            loading="lazy"
+          />
+          <img
+            src="https://via.placeholder.com/150x60?text=Company+4"
+            alt="Company Logo"
+            loading="lazy"
+          />
+          <img
+            src="https://via.placeholder.com/150x60?text=Company+5"
+            alt="Company Logo"
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="features-section">
+      <div class="container">
+        <h2 class="section-title">Powerful Hiring Features</h2>
+        <p class="section-subtitle">
+          Our Django-powered platform offers everything you need to streamline
+          your hiring process
+        </p>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-bullseye"></i>
+            </div>
+            <h3>Smart Matching</h3>
+            <p>
+              Our algorithm matches job requirements with candidate skills to
+              surface the best fits automatically.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-tachometer-alt"></i>
+            </div>
+            <h3>Dashboard Analytics</h3>
+            <p>
+              Real-time metrics and reporting to track your hiring pipeline and
+              optimize your process.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-comments"></i>
+            </div>
+            <h3>Collaborative Hiring</h3>
+            <p>
+              Share candidate profiles with your team and collect feedback in
+              one centralized platform.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-robot"></i>
+            </div>
+            <h3>AI Screening</h3>
+            <p>
+              Automated resume screening saves you time by filtering candidates
+              based on your criteria.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+            <h3>Interview Scheduling</h3>
+            <p>
+              Integrated calendar with automated scheduling eliminates
+              back-and-forth emails.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-database"></i>
+            </div>
+            <h3>Talent Pool</h3>
+            <p>
+              Build your own database of qualified candidates for future
+              opportunities.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="solutions" class="solutions-section">
+      <div class="container">
+        <div class="solutions-content">
+          <div class="solutions-text">
+            <h2 class="section-title">
+              Tailored Solutions for Every Hiring Need
+            </h2>
+            <p>
+              Whether you're a startup looking for your first hire or an
+              enterprise scaling your team, TalentFlow adapts to your
+              requirements with customizable workflows and scalable
+              infrastructure.
+            </p>
+
+            <div class="solution-points">
+              <div class="point">
+                <i class="fas fa-check"></i>
+                <span>High-volume hiring for enterprise teams</span>
+              </div>
+              <div class="point">
+                <i class="fas fa-check"></i>
+                <span>Technical recruiting with coding assessments</span>
+              </div>
+              <div class="point">
+                <i class="fas fa-check"></i>
+                <span>Remote and global hiring capabilities</span>
+              </div>
+              <div class="point">
+                <i class="fas fa-check"></i>
+                <span>University recruiting programs</span>
+              </div>
+            </div>
+
+            <a href="#" class="btn btn-primary">Learn About Our Solutions</a>
+          </div>
+          <div class="solutions-image">
+            <img
+              src="https://images.unsplash.com/photo-1573164713988-8665fc963095?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80"
+              alt="Hiring Solutions"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="testimonials" class="testimonials-section">
+      <div class="container">
+        <h2 class="section-title">What Our Customers Say</h2>
+        <p class="section-subtitle">
+          Join thousands of companies who found their perfect hires through
+          TalentFlow
+        </p>
+
+        <div class="testimonials-grid">
+          <div class="testimonial-card">
+            <div class="testimonial-content">
+              <div class="stars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <p>
+                "TalentFlow reduced our time-to-hire by 40% and helped us build
+                an exceptional engineering team. The platform is incredibly
+                intuitive and powerful."
+              </p>
+            </div>
+            <div class="testimonial-author">
+              <img
+                src="https://randomuser.me/api/portraits/women/45.jpg"
+                alt="Sarah Johnson"
+                loading="lazy"
+              />
+              <div class="author-info">
+                <h4>Sarah Johnson</h4>
+                <p>CTO, TechStart Inc.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="testimonial-content">
+              <div class="stars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+              <p>
+                "As a growing startup, we needed a hiring solution that could
+                scale with us. TalentFlow's Django backend handles our needs
+                perfectly with excellent performance."
+              </p>
+            </div>
+            <div class="testimonial-author">
+              <img
+                src="https://randomuser.me/api/portraits/men/32.jpg"
+                alt="Michael Chen"
+                loading="lazy"
+              />
+              <div class="author-info">
+                <h4>Michael Chen</h4>
+                <p>Founder, ScaleUp</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="testimonial-content">
+              <div class="stars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+              </div>
+              <p>
+                "The candidate matching is phenomenal. We're seeing higher
+                quality applicants and better conversion rates through our
+                hiring funnel."
+              </p>
+            </div>
+            <div class="testimonial-author">
+              <img
+                src="https://randomuser.me/api/portraits/women/68.jpg"
+                alt="Emily Rodriguez"
+                loading="lazy"
+              />
+              <div class="author-info">
+                <h4>Emily Rodriguez</h4>
+                <p>HR Director, EnterpriseCo</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing" class="pricing-section">
+      <div class="container">
+        <h2 class="section-title">Simple, Transparent Pricing</h2>
+        <p class="section-subtitle">
+          Pay only for what you need with flexible plans that scale
+        </p>
+
+        <div class="pricing-tabs">
+          <div class="toggle-container">
+            <span>Monthly</span>
+            <label class="switch">
+              <input type="checkbox" id="pricing-toggle" />
+              <span class="slider round"></span>
+            </label>
+            <span>Annual <small>(Save 20%)</small></span>
+          </div>
+
+          <div class="pricing-cards">
+            <div class="pricing-card">
+              <h3>Starter</h3>
+              <div class="price">
+                <span class="amount">$99</span>
+                <span class="period">/month</span>
+              </div>
+              <p>Perfect for small teams and startups</p>
+              <ul class="features-list">
+                <li><i class="fas fa-check"></i> 5 active job postings</li>
+                <li><i class="fas fa-check"></i> 500 candidate profiles/mo</li>
+                <li><i class="fas fa-check"></i> Basic analytics</li>
+                <li><i class="fas fa-check"></i> Email support</li>
+              </ul>
+              <a href="#" class="btn btn-outline">Get Started</a>
+            </div>
+
+            <div class="pricing-card featured">
+              <div class="featured-badge">Most Popular</div>
+              <h3>Professional</h3>
+              <div class="price">
+                <span class="amount">$299</span>
+                <span class="period">/month</span>
+              </div>
+              <p>For growing businesses and teams</p>
+              <ul class="features-list">
+                <li><i class="fas fa-check"></i> 15 active job postings</li>
+                <li>
+                  <i class="fas fa-check"></i> 2,000 candidate profiles/mo
+                </li>
+                <li><i class="fas fa-check"></i> Advanced analytics</li>
+                <li><i class="fas fa-check"></i> AI candidate matching</li>
+                <li><i class="fas fa-check"></i> Priority support</li>
+              </ul>
+              <a href="#" class="btn btn-primary">Get Started</a>
+            </div>
+
+            <div class="pricing-card">
+              <h3>Enterprise</h3>
+              <div class="price">
+                <span class="amount">Custom</span>
+              </div>
+              <p>For large organizations with complex needs</p>
+              <ul class="features-list">
+                <li><i class="fas fa-check"></i> Unlimited job postings</li>
+                <li><i class="fas fa-check"></i> Unlimited candidates</li>
+                <li><i class="fas fa-check"></i> Premium analytics</li>
+                <li><i class="fas fa-check"></i> Dedicated account manager</li>
+                <li><i class="fas fa-check"></i> API access</li>
+                <li><i class="fas fa-check"></i> Custom workflows</li>
+              </ul>
+              <a href="#" class="btn btn-outline">Contact Sales</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="container">
+        <h2>Ready to Transform Your Hiring Process?</h2>
+        <p>
+          Join thousands of companies who found their perfect hires through
+          TalentFlow's powerful Django-powered platform.
+        </p>
+        <div class="cta-buttons">
+          <a href="#" class="btn btn-primary btn-large"
+            ><i class="fas fa-briefcase"></i> Post a Job</a
+          >
+          <a href="#" class="btn btn-secondary btn-large"
+            ><i class="fas fa-phone-alt"></i> Request Demo</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-about">
+            <div class="logo">
+              <span class="logo-icon"
+                ><i class="fas fa-network-wired"></i
+              ></span>
+              <span class="logo-text">TalentFlow</span>
+            </div>
+            <p>
+              The modern hiring platform that helps companies find and hire the
+              right candidates faster.
+            </p>
+            <div class="social-links">
+              <a href="#" aria-label="Facebook"
+                ><i class="fab fa-facebook-f"></i
+              ></a>
+              <a href="#" aria-label="Twitter"
+                ><i class="fab fa-twitter"></i
+              ></a>
+              <a href="#" aria-label="LinkedIn"
+                ><i class="fab fa-linkedin-in"></i
+              ></a>
+              <a href="#" aria-label="Instagram"
+                ><i class="fab fa-instagram"></i
+              ></a>
+            </div>
+          </div>
+
+          <div class="footer-links">
+            <h4>For Employers</h4>
+            <ul>
+              <li><a href="#">How It Works</a></li>
+              <li><a href="#">Pricing</a></li>
+              <li><a href="#">Recruitment Solutions</a></li>
+              <li><a href="#">Case Studies</a></li>
+              <li><a href="#">Hiring Resources</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-links">
+            <h4>For Job Seekers</h4>
+            <ul>
+              <li><a href="#">Browse Jobs</a></li>
+              <li><a href="#">Career Advice</a></li>
+              <li><a href="#">Resume Builder</a></li>
+              <li><a href="#">Salary Calculator</a></li>
+              <li><a href="#">Job Alerts</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-links">
+            <h4>Company</h4>
+            <ul>
+              <li><a href="#">About Us</a></li>
+              <li><a href="#">Careers</a></li>
+              <li><a href="#">Blog</a></li>
+              <li><a href="#">Press</a></li>
+              <li><a href="#">Contact</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-contact">
+            <h4>Contact Us</h4>
+            <ul class="contact-info">
+              <li><i class="fas fa-map-marker-alt"></i> DireDawa, Ethiopia</li>
+              <li><i class="fas fa-phone-alt"></i> +251972241817</li>
+              <li><i class="fas fa-envelope"></i> contact@talentflow.com</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <div class="footer-legal">
+            <p>&copy; 2023 TalentFlow. All rights reserved.</p>
+            <div class="legal-links">
+              <a href="#">Privacy Policy</a>
+              <a href="#">Terms of Service</a>
+              <a href="#">Cookie Policy</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
