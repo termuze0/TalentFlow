@@ -1,0 +1,212 @@
+/* registration.css - Enhanced Input Field Styles */
+/* ============= BASE STYLES ============= */
+:root {
+    /* Color Palette */
+    --primary-color: #4285F4;
+    --primary-light: #E8F0FE;
+    --primary-dark: #3367D6;
+    --error-color: #EA4335;
+    --error-light: #FDECEE;
+    --success-color: #34A853;
+    --warning-color: #FBBC05;
+    --dark-color: #202124;
+    --dark-gray: #5F6368;
+    --medium-gray: #9AA0A6;
+    --light-gray: #DADCE0;
+    --lighter-gray: #F1F3F4;
+    --white: #FFFFFF;
+    
+    /* Typography */
+    --primary-font: 'Poppins', sans-serif;
+    --secondary-font: 'Roboto', sans-serif;
+    --tertiary-font: 'Montserrat', sans-serif;
+    
+    /* Spacing & Effects */
+    --small-radius: 6px;
+    --medium-radius: 8px;
+    --large-radius: 12px;
+    --input-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    --focus-shadow: 0 0 0 3px rgba(66, 133, 244, 0.15);
+    --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-medium: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============= ENHANCED FORM CONTROLS ============= */
+.form-group {
+    margin-bottom: 1.75rem;
+    position: relative;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--dark-gray);
+    font-family: var(--secondary-font);
+    transition: var(--transition-fast);
+    transform-origin: left top;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 1px solid var(--light-gray);
+    border-radius: var(--small-radius);
+    font-size: 0.9375rem;
+    font-family: var(--secondary-font);
+    background-color: var(--white);
+    box-shadow: var(--input-shadow);
+    transition: var(--transition-medium);
+    color: var(--dark-color);
+}
+
+.form-input::placeholder {
+    color: var(--medium-gray);
+    opacity: 1;
+}
+
+.form-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: var(--focus-shadow);
+    outline: none;
+}
+
+/* Floating Label Effect */
+.form-group.floating-label {
+    position: relative;
+    padding-top: 1.25rem;
+}
+
+.form-group.floating-label .form-label {
+    position: absolute;
+    top: 1.75rem;
+    left: 1rem;
+    margin-bottom: 0;
+    pointer-events: none;
+    transform: translateY(-50%);
+    background-color: var(--white);
+    padding: 0 0.25rem;
+    color: var(--medium-gray);
+}
+
+.form-group.floating-label .form-input:focus + .form-label,
+.form-group.floating-label .form-input:not(:placeholder-shown) + .form-label {
+    transform: translateY(-1.75rem) scale(0.85);
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+/* Input Status Indicators */
+.form-input.success {
+    border-color: var(--success-color);
+}
+
+.form-input.error {
+    border-color: var(--error-color);
+    background-color: var(--error-light);
+}
+
+/* Input Icons */
+.form-group.has-icon {
+    position: relative;
+}
+
+.form-group.has-icon .form-input {
+    padding-left: 2.75rem;
+}
+
+.form-group.has-icon .input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--medium-gray);
+    pointer-events: none;
+}
+
+/* Select Dropdown Styling */
+.form-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+    padding-right: 2.5rem;
+}
+
+/* Password Toggle */
+.password-toggle {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--medium-gray);
+    cursor: pointer;
+    padding: 0.25rem;
+}
+
+.password-toggle:hover {
+    color: var(--dark-gray);
+}
+
+/* Input Animations */
+@keyframes inputHighlighter {
+    from { width: 0; opacity: 0; }
+    to { width: 100%; opacity: 1; }
+}
+
+.form-group.animated .form-input:focus ~ .input-highlight {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background-color: var(--primary-color);
+    animation: inputHighlighter 0.3s ease-out forwards;
+}
+
+/* ============= ERROR STATES ============= */
+.error-message {
+    display: block;
+    margin-top: 0.375rem;
+    font-size: 0.75rem;
+    color: var(--error-color);
+    font-family: var(--secondary-font);
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============= RESPONSIVE ADJUSTMENTS ============= */
+@media (max-width: 480px) {
+    .form-input {
+        padding: 0.75rem 0.875rem;
+        font-size: 0.875rem;
+    }
+    
+    .form-group.floating-label .form-label {
+        font-size: 0.8125rem;
+    }
+}
+
+/* ============= DARK MODE SUPPORT ============= */
+@media (prefers-color-scheme: dark) {
+    .form-input {
+        background-color: #2d2d2d;
+        border-color: #444;
+        color: var(--white);
+    }
+    
+    .form-group.floating-label .form-label {
+        background-color: #2d2d2d;
+    }
+    
+    .form-input::placeholder {
+        color: #888;
+    }
+}

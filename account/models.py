@@ -27,7 +27,9 @@ class CustomUser(models.Model):
 
     def is_job_seeker(self):
         return self.user_type == 'JOB_SEEKER'
-
+    @property
+    def is_authenticated(self):
+        return True
 
 class EmployerProfile(models.Model):
     user = models.OneToOneField('CustomUser', on_delete=models.CASCADE, related_name='employer_profile')
