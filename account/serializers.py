@@ -33,3 +33,9 @@ class RegistrationSerializer(serializers.Serializer):
             JobSeekerProfile.objects.create(user=user)
 
         return user
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+class SocialLoginSerializer(serializers.Serializer):
+    provider = serializers.CharField()
+    provider_user_id = serializers.CharField()
