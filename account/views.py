@@ -148,3 +148,5 @@ def social_login(request):
         return Response({'error': 'Unsupported provider'}, status=400)
 
     return Response(serializer.errors, status=400)
+def UserhomePage(request):
+    return render(request, 'user_home.html')

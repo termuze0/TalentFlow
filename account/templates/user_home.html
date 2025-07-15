@@ -1,0 +1,171 @@
+
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobPortal - Find Your Dream Job</title>
+    <link rel="stylesheet" href="{% static 'user_home.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">JobPortal</a>
+            <div class="nav-links">
+                <a href="#" class="active">Find Jobs</a>
+                <a href="#">Saved Jobs</a>
+                <a href="#">Applications</a>
+                <div class="dropdown">
+                    <button class="dropbtn">
+                        <img src="#" alt="Profile" class="profile-img">
+                        <span>{{ user.first_name }}</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="#"><i class="fas fa-user"></i> Profile</a>
+                        <a href="#"><i class="fas fa-cog"></i> Settings</a>
+                        <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Find Your Dream Job Today</h1>
+            <p>Discover thousands of job opportunities from top companies</p>
+            
+            <form method="get" action="#" class="search-form">
+                <div class="search-field">
+                    <i class="fas fa-search"></i>
+                    <input type="text" name="q" placeholder="Job title, keywords, or company" value="{{ request.GET.q }}">
+                </div>
+                <div class="search-field">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <input type="text" name="location" placeholder="Location" value="{{ request.GET.location }}">
+                </div>
+                <button type="submit" class="search-btn">Search Jobs</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Job Categories -->
+    <section class="categories">
+        <div class="container">
+            <h2>Popular Job Categories</h2>
+            <div class="category-grid">
+                <a href="#" class="category-card">
+                    <i class="fas fa-laptop-code"></i>
+                    <h3>Information Technology</h3>
+                    <p>{{ it_jobs_count }} jobs available</p>
+                </a>
+                <a href="#" class="category-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Finance</h3>
+                    <p>{{ finance_jobs_count }} jobs available</p>
+                </a>
+                <a href="#" class="category-card">
+                    <i class="fas fa-medkit"></i>
+                    <h3>Healthcare</h3>
+                    <p>{{ healthcare_jobs_count }} jobs available</p>
+                </a>
+                <a href="#" class="category-card">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h3>Education</h3>
+                    <p>{{ education_jobs_count }} jobs available</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Jobs
+    <section class="featured-jobs">
+        <div class="container">
+            <div class="section-header">
+                <h2>Featured Jobs</h2>
+               
+            </div>
+            
+            <div class="jobs-grid">
+                {% for job in featured_jobs %}
+                <div class="job-card">
+                    <div class="job-header">
+                        <img src="{{ job.company.logo.url }}" alt="{{ job.company.name }}" class="company-logo">
+                        <div class="job-title">
+                            <h3><a href="{% url 'job_detail' job.id %}">{{ job.title }}</a></h3>
+                            <p>{{ job.company.name }}</p>
+                        </div>
+                        <button class="save-job" data-job-id="{{ job.id }}">
+                            <i class="far fa-bookmark"></i>
+                        </button>
+                    </div>
+                    <div class="job-details">
+                        <span><i class="fas fa-map-marker-alt"></i> {{ job.location }}</span>
+                        <span><i class="fas fa-briefcase"></i> {{ job.get_job_type_display }}</span>
+                        <span><i class="fas fa-money-bill-wave"></i> ${{ job.salary_min }} - ${{ job.salary_max }}</span>
+                    </div>
+                    <div class="job-footer">
+                        <span class="posted-date">Posted {{ job.created_at|timesince }} ago</span>
+                        <a href="{% url 'job_detail' job.id %}" class="apply-btn">Apply Now</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Jobs -->
+    <!-- <section class="recent-jobs">
+        <div class="container">
+            <div class="section-header">
+                <h2>Recently Added Jobs</h2>
+               
+            </div>
+            
+            <div class="jobs-list">
+                {% for job in recent_jobs %}
+                <div class="job-item">
+                    <img src="{{ job.company.logo.url }}" alt="{{ job.company.name }}" class="company-logo">
+                    <div class="job-info">
+                        <h3><a href="{% url 'job_detail' job.id %}">{{ job.title }}</a></h3>
+                        <p class="company-name">{{ job.company.name }}</p>
+                        <div class="job-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> {{ job.location }}</span>
+                            <span><i class="fas fa-clock"></i> {{ job.get_job_type_display }}</span>
+                            <span><i class="fas fa-money-bill-wave"></i> ${{ job.salary_min }} - ${{ job.salary_max }}</span>
+                        </div>
+                    </div>
+                    <div class="job-actions">
+                        <button class="save-job" data-job-id="{{ job.id }}">
+                            <i class="far fa-bookmark"></i> Save
+                        </button>
+                        <a href="{% url 'job_detail' job.id %}" class="apply-btn">Apply Now</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section> --> -->
+
+    <!-- Call to Action -->
+    <section class="cta">
+        <div class="container">
+            <h2>Ready to take the next step in your career?</h2>
+            <p>Create a profile and let employers find you</p>
+            <a href="#" class="cta-btn">Complete Your Profile</a>
+        </div>
+    </section>
+
+  
+    <!-- <script src="{% static 'js/jobseeker.js' %}"></script> -->
+</body>
+</html>
+{% endblock %}
