@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from account.models import CustomUser  # Assuming Employer is a CustomUser with user_type='EMPLOYER'
-
+from account.models import CustomUser  
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
 
