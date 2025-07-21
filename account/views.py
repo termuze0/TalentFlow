@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated ,AllowAny
 from .authentication import CustomSessionAuthentication
 from django.contrib.auth.hashers import check_password
 from .utils import get_client_ip
+from jobs.models import Job
 import uuid
 def LandingPage(request):
     return render(request, 'landing.html')
@@ -149,4 +150,5 @@ def social_login(request):
 
     return Response(serializer.errors, status=400)
 def UserhomePage(request):
-    return render(request, 'user_home.html')
+    jobs = Job.objects.all().order_by('-posted_at')[:5]
+    return render(request, 'account/user_home.html',{'jobs': jobs})

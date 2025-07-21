@@ -7,5 +7,5 @@ urlpatterns = [
     path('social-login/', social_login, name='social-login'),
     path('protected/', ProtectedAPIView.as_view(), name='protected'),
     path('', LandingPage, name='register'),
-    path('home/', UserhomePage, name='UserhomePage'),
+    path('home/', UserhomePage, name='home'),
 ]

@@ -1,0 +1,23 @@
+<nav class="navbar">
+  <a href="{% url 'home' %}" class="brand">TalentFlow</a>
+  <ul class="nav-links">
+    <li><a href="{% url 'home' %}">Home</a></li>
+    <li><a href="{% url 'job_list' %}">Jobs</a></li>
+
+    {% if user.is_authenticated %}
+      <li class="profile-menu">
+        <span class="username" id="usernameToggle">{{ user.get_full_name|default:user.username }}</span>
+
+        <ul class="dropdown" id="profileDropdown">
+          <li><a href="#">Profile</a></li>
+          <li><a href="#">Settings</a></li>
+          <li><a href="#">Dark Mode</a></li>
+          <li><a href="#">Logout</a></li>
+        </ul>
+      </li>
+    {% else %}
+      <li><a href="{% url 'login' %}">Login</a></li>
+      <li><a href="{% url 'register' %}">Register</a></li>
+    {% endif %}
+  </ul>
+</nav>
