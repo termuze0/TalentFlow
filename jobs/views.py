@@ -80,7 +80,7 @@ def job_list_view(request):
 
     if sort == "salary":
         jobs = jobs.order_by("-salary")
-    else:  # default: most recent
+    else: 
         jobs = jobs.order_by("-posted_at")
 
     paginator = Paginator(jobs, 10)

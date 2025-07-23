@@ -1,0 +1,29 @@
+<div class="hero-search">
+  <h1>Find Your Dream Job</h1>
+
+  <form method="GET" action="{% url 'job_list' %}">
+    <div>
+      <label for="title">Job Title:</label>
+      <input type="text" id="title" name="title" placeholder="e.g. Software Engineer">
+    </div>
+
+    <div>
+      <label for="location">Location:</label>
+      <input type="text" id="location" name="location" placeholder="e.g. Addis Ababa">
+    </div>
+
+    <div>
+      <label for="category">Category:</label>
+      <select name="category" id="category">
+        <option value="">All Categories</option>
+        {% for category in categories %}
+          <option value="{{ category.id }}">{{ category.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div>
+      <button type="submit">Search</button>
+    </div>
+  </form>
+</div>

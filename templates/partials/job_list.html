@@ -1,0 +1,22 @@
+<div class="job-listings">
+  <h2>Job Listings</h2>
+
+  {% if jobs %}
+    <ul>
+      {% for job in jobs %}
+        <li>
+          <div class="job-content">
+            <h3>{{ job.title }}</h3>
+            <p><strong>Location:</strong> {{ job.location }}</p>
+            <p><strong>Type:</strong> {{ job.job_type.name }}</p>
+            <p><strong>Posted:</strong> {{ job.posted_at|date:"M d" }}</p>
+            <p><strong>Salary:</strong> {{ job.salary }}</p>
+          </div>
+          <a href="{% url 'job_detail' job.id %}">View</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No jobs found.</p>
+  {% endif %}
+</div>

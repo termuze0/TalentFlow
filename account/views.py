@@ -150,5 +150,5 @@ def social_login(request):
 
     return Response(serializer.errors, status=400)
 def UserhomePage(request):
-    jobs = Job.objects.all().order_by('-posted_at')[:5]
+    jobs = Job.objects.all().order_by('-posted_at')
     return render(request, 'account/user_home.html',{'jobs': jobs})
