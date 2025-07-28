@@ -9,7 +9,12 @@
 
     <div>
       <label for="location">Location:</label>
-      <input type="text" id="location" name="location" placeholder="e.g. Addis Ababa">
+      <select name="location" id="location">
+        <option value="">All Locations</option>
+        {% for location in locations %}
+          <option value="{{ location }}">{{ location }}</option>
+        {% endfor %}
+      </select>
     </div>
 
     <div>

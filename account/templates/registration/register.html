@@ -1,353 +1,135 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration Portal</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        /* registration.css - Split Screen Design */
-        :root {
-            /* Color Palette */
-            --primary-color: #4285F4;
-            --primary-light: #E8F0FE;
-            --primary-dark: #3367D6;
-            --error-color: #EA4335;
-            --error-light: #FDECEE;
-            --success-color: #34A853;
-            --warning-color: #FBBC05;
-            --dark-color: #202124;
-            --dark-gray: #5F6368;
-            --medium-gray: #9AA0A6;
-            --light-gray: #DADCE0;
-            --lighter-gray: #F1F3F4;
-            --white: #FFFFFF;
-            --black: #000000;
-            
-            /* Typography */
-            --primary-font: 'Poppins', sans-serif;
-            --secondary-font: 'Roboto', sans-serif;
-            --tertiary-font: 'Montserrat', sans-serif;
-            
-            /* Spacing & Effects */
-            --small-radius: 6px;
-            --medium-radius: 8px;
-            --large-radius: 12px;
-            --input-shadow: 0 1px 2px rgba(0,0,0,0.05);
-            --focus-shadow: 0 0 0 3px rgba(66, 133, 244, 0.15);
-            --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-medium: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: var(--primary-font);
-            min-height: 100vh;
-            display: flex;
-            background-color: var(--lighter-gray);
-        }
-
-        /* Split Screen Layout */
-        .split-container {
-            display: flex;
-            width: 100%;
-            min-height: 100vh;
-        }
-
-        .image-half {
-            flex: 1;
-            background: linear-gradient(rgba(66, 133, 244, 0.7), rgba(66, 133, 244, 0.9)), 
-                        url('https://images.unsplash.com/photo-1521791055366-0d553872125f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 3rem;
-            color: white;
-        }
-
-        .form-half {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 2rem;
-        }
-
-        .form-container {
-            width: 100%;
-            max-width: 450px;
-            background: var(--white);
-            border-radius: var(--large-radius);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            padding: 2.5rem;
-        }
-
-        /* Header Styles */
-        .register-header {
-            text-align: center;
-            margin-bottom: 2.5rem;
-        }
-
-        .register-title {
-            font-size: 1.75rem;
-            font-weight: 600;
-            color: var(--dark-color);
-            margin-bottom: 0.5rem;
-            font-family: var(--tertiary-font);
-        }
-
-        .register-subtitle {
-            font-size: 0.9375rem;
-            color: var(--medium-gray);
-        }
-
-        /* Form Styles */
-        .form-group {
-            margin-bottom: 1.5rem;
-            position: relative;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--dark-gray);
-            font-family: var(--secondary-font);
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 0.875rem 1rem;
-            border: 1px solid var(--light-gray);
-            border-radius: var(--small-radius);
-            font-size: 0.9375rem;
-            font-family: var(--secondary-font);
-            background-color: var(--white);
-            box-shadow: var(--input-shadow);
-            transition: var(--transition-medium);
-            color: var(--dark-color);
-        }
-
-        .form-input:focus {
-            border-color: var(--primary-color);
-            box-shadow: var(--focus-shadow);
-            outline: none;
-        }
-
-        .form-select {
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 1rem center;
-            background-size: 1em;
-        }
-
-        /* Button Styles */
-        .submit-btn {
-            width: 100%;
-            padding: 0.9375rem;
-            background-color: var(--primary-color);
-            color: var(--white);
-            border: none;
-            border-radius: var(--small-radius);
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition-fast);
-            margin-top: 0.5rem;
-            font-family: var(--primary-font);
-        }
-
-        .submit-btn:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(66, 133, 244, 0.2);
-        }
-
-        /* Footer Links */
-        .register-footer {
-            margin-top: 1.5rem;
-            text-align: center;
-            font-size: 0.875rem;
-            color: var(--medium-gray);
-        }
-
-        .register-footer a {
-            color: var(--primary-color);
-            font-weight: 500;
-            text-decoration: none;
-        }
-
-        .register-footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* Error Styles */
-        .error-list {
-            background-color: var(--error-light);
-            border-left: 4px solid var(--error-color);
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-            border-radius: var(--small-radius);
-            list-style: none;
-        }
-
-        .error-list li {
-            color: var(--error-color);
-            margin-bottom: 0.5rem;
-            font-size: 0.8125rem;
-        }
-
-        .error-list li:last-child {
-            margin-bottom: 0;
-        }
-
-        /* Image Half Content */
-        .image-content {
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .image-title {
-            font-size: 2.25rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            line-height: 1.3;
-        }
-
-        .image-description {
-            font-size: 1.0625rem;
-            line-height: 1.6;
-            opacity: 0.9;
-            margin-bottom: 2rem;
-        }
-
-        .image-features {
-            list-style: none;
-        }
-
-        .image-features li {
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: flex-start;
-        }
-
-        .image-features i {
-            margin-right: 0.75rem;
-            margin-top: 0.125rem;
-            color: var(--warning-color);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .split-container {
-                flex-direction: column;
-            }
-            
-            .image-half {
-                display: none;
-            }
-            
-            .form-half {
-                padding: 1.5rem;
-            }
-            
-            .form-container {
-                padding: 2rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .form-container {
-                padding: 1.5rem;
-            }
-            
-            .register-title {
-                font-size: 1.5rem;
-            }
-        }
-    </style>
+    <title>Register | TalentHub</title>
+    <link rel="stylesheet" href="{% static 'register.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
+
 <body>
-    <div class="split-container">
-        <!-- Left Half with Image -->
-        <div class="image-half">
-            <div class="image-content">
-                <h2 class="image-title">Join Our Community</h2>
-                <p class="image-description">Register today and unlock access to exclusive features and opportunities tailored just for you.</p>
-                <ul class="image-features">
-                    <li><i class="fas fa-check-circle"></i> Connect with industry professionals</li>
-                    <li><i class="fas fa-check-circle"></i> Access exclusive job opportunities</li>
-                    <li><i class="fas fa-check-circle"></i> Personalized career recommendations</li>
-                </ul>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1 class="auth-title">Join TalentHub</h1>
+                <p class="auth-subtitle">Create your account to get started</p>
+            </div>
+            
+            {% if errors %}
+                <div class="auth-errors">
+                    {% for field, error_list in errors.items %}
+                        {% for error in error_list %}
+                            <p class="auth-error"><strong>{{ field|title }}:</strong> {{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <form class="auth-form" method="POST" action="">
+                {% csrf_token %}
+                <div class="form-field">
+                    <label for="email" class="field-label">Email Address</label>
+                    <input type="email" id="email" name="email" class="field-input" 
+                           placeholder="your@email.com" value="{{ data.email|default:'' }}" required>
+                    <div class="field-underline"></div>
+                </div>
+
+                <div class="form-field">
+                    <label for="fullname" class="field-label">Full Name</label>
+                    <input type="text" id="fullname" name="fullname" class="field-input" 
+                           placeholder="John Doe" value="{{ data.fullname|default:'' }}" required>
+                    <div class="field-underline"></div>
+                </div>
+
+                <div class="form-field">
+                    <label for="phone" class="field-label">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" class="field-input" 
+                           placeholder="+1 (123) 456-7890" value="{{ data.phone|default:'' }}" required>
+                    <div class="field-underline"></div>
+                </div>
+
+                <div class="form-field">
+                    <label for="user_type" class="field-label">I am a</label>
+                    <select id="user_type" name="user_type" class="field-input field-select" required>
+                        <option value="" disabled selected>Select account type</option>
+                        <option value="JOB_SEEKER" {% if data.user_type == 'JOB_SEEKER' %}selected{% endif %}>Job Seeker</option>
+                        <option value="EMPLOYER" {% if data.user_type == 'EMPLOYER' %}selected{% endif %}>Employer</option>
+                    </select>
+                    <div class="field-underline"></div>
+                </div>
+
+                <div class="form-field">
+                    <label for="password" class="field-label">Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" name="password" class="field-input" 
+                               placeholder="Create a password" required>
+                        <button type="button" class="password-toggle">
+                            <i class="far fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="field-underline"></div>
+                    <div class="field-hint">Use 8+ characters with letters, numbers & symbols</div>
+                </div>
+
+                <button type="submit" class="auth-submit-btn">
+                    <span class="btn-text">Create Account</span>
+                </button>
+            </form>
+
+            <div class="auth-divider">
+                <span class="divider-line"></span>
+                <span class="divider-text">OR</span>
+                <span class="divider-line"></span>
+            </div>
+
+            <div class="auth-social">
+                <button class="social-btn google-btn">
+                    <span class="social-icon">
+                        <i class="fab fa-google"></i>
+                    </span>
+                    <span class="social-text">Continue with Google</span>
+                </button>
+
+                <button class="social-btn linkedin-btn">
+                    <span class="social-icon">
+                        <i class="fab fa-linkedin-in"></i>
+                    </span>
+                    <span class="social-text">Continue with LinkedIn</span>
+                </button>
+            </div>
+
+            <div class="auth-footer">
+                <p class="footer-text">Already have an account? <a href="/login" class="footer-link">Sign In</a></p>
+                <p class="footer-text">By registering, you agree to our <a href="#" class="footer-link">Terms</a> and 
+                    <a href="#" class="footer-link">Privacy Policy</a>.</p>
             </div>
         </div>
 
-        <!-- Right Half with Form -->
-        <div class="form-half">
-            <div class="form-container">
-                <div class="register-header">
-                    <h1 class="register-title">Create Account</h1>
-                    <p class="register-subtitle">Join us to get started</p>
-                </div>
-
-                {% if errors %}
-                    <ul class="error-list">
-                        {% for field, error_list in errors.items %}
-                            {% for error in error_list %}
-                                <li><strong>{{ field }}:</strong> {{ error }}</li>
-                            {% endfor %}
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-
-                <form method="post" action="">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label for="email" class="form-label">Email Address</label>
-                        <input type="email" id="email" name="email" class="form-input" value="{{ data.email|default:'' }}" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="fullname" class="form-label">Full Name</label>
-                        <input type="text" id="fullname" name="fullname" class="form-input" value="{{ data.fullname|default:'' }}" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="phone" class="form-label">Phone Number</label>
-                        <input type="text" id="phone" name="phone" class="form-input" value="{{ data.phone|default:'' }}" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="user_type" class="form-label">User Type</label>
-                        <select id="user_type" name="user_type" class="form-input form-select" required>
-                            <option value="" disabled selected>Select User Type</option>
-                            <option value="JOB_SEEKER" {% if data.user_type == 'JOB_SEEKER' %}selected{% endif %}>Job Seeker</option>
-                            <option value="EMPLOYER" {% if data.user_type == 'EMPLOYER' %}selected{% endif %}>Employer</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" id="password" name="password" class="form-input" required>
-                    </div>
-
-                    <button type="submit" class="submit-btn">Register</button>
-                </form>
-
-                <div class="register-footer">
-                    <p>Already have an account? <a href="/login">Sign in</a></p>
-                </div>
-            </div>
+        <div class="auth-decorations">
+            <div class="decor-circle decor-circle-1"></div>
+            <div class="decor-circle decor-circle-2"></div>
+            <div class="decor-blob decor-blob-1"></div>
+            <div class="decor-blob decor-blob-2"></div>
         </div>
     </div>
+    
+    <script>
+        // Password toggle functionality
+        document.querySelector('.password-toggle').addEventListener('click', function() {
+            const passwordInput = document.querySelector('#password');
+            const icon = this.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        });
+    </script>
 </body>
 </html>
