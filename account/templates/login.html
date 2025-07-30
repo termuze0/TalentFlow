@@ -57,20 +57,22 @@
             </div>
 
             <div class="social-login-options">
-                <button class="social-login-btn google-btn">
-                    <span class="social-icon">
-                        <i class="fab fa-google"></i>
-                    </span>
-                    <span class="social-text">Continue with Google</span>
-                </button>
+    
+    <a href="/social-login/?provider=google" class="social-login-btn google-btn">
+        <span class="social-icon">
+            <i class="fab fa-google"></i>
+        </span>
+        <span class="social-text">Continue with Google</span>
+    </a>
 
-                <button class="social-login-btn microsoft-btn">
-                    <span class="social-icon">
-                        <i class="fab fa-microsoft"></i>
-                    </span>
-                    <span class="social-text">Continue with Microsoft</span>
-                </button>
-            </div>
+    <a href="/social-login/?provider=twitter" class="social-login-btn twitter-btn">
+        <span class="social-icon">
+            <i class="fab fa-twitter"></i>
+        </span>
+        <span class="social-text">Continue with Twitter</span>
+    </a>
+</div>
+
             <div class="social-login-footer">
                 <p class="footer-text">Don't have an account? <a href="{% url 'register' %}" class="footer-link">Sign up</a></p>
                 <p class="footer-text">By continuing, you agree to our <a href="#" class="footer-link">Terms</a> and <a

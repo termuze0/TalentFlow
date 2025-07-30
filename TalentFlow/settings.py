@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+
     'rest_framework',
     'account',
     'jobs'
@@ -127,3 +129,13 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET')
+GOOGLE_REDIRECT_URI = config('GOOGLE_REDIRECT_URI')
+
+TWITTER_CLIENT_ID = config('TWITTER_CLIENT_ID')
+TWITTER_CLIENT_SECRET = config('TWITTER_CLIENT_SECRET')
+TWITTER_CALLBACK_URI = config('TWITTER_CALLBACK_URI')
