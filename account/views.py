@@ -12,6 +12,8 @@ from .authentication import CustomSessionAuthentication
 from django.contrib.auth.hashers import check_password
 from .utils import get_client_ip
 from django.conf import settings
+import requests
+import secrets
 
 from jobs.models import Job
 import uuid
@@ -49,9 +51,9 @@ class LoginView(APIView):
             try:
                 user = CustomUser.objects.get(email=email)
                 cred = UserCredential.objects.get(user=user)
+
                 if check_password(password, cred.password_hash):
-                   
-                    session_token = uuid.uuid4()
+                    session_token = str(uuid.uuid4())
                     ip = get_client_ip(request)
                     agent = request.META.get('HTTP_USER_AGENT', '')
 
@@ -61,7 +63,7 @@ class LoginView(APIView):
                         ip_address=ip,
                         user_agent=agent,
                         created_at=timezone.now(),
-                        expires_at=timezone.now() + timedelta(days=7),  
+                        expires_at=timezone.now() + timedelta(days=7),
                         is_active=True
                     )
 
@@ -79,16 +81,29 @@ class LoginView(APIView):
             except (CustomUser.DoesNotExist, UserCredential.DoesNotExist):
                 return Response({"error": "User not found"}, status=404)
         return Response(serializer.errors, status=400)
-class UserProfileView(APIView):
-    
 
+class UserInfoView(APIView):
     def get(self, request):
-        user = request.user
-        return Response({
-            "email": user.email,
-            "fullname": user.fullname,
-            "type": user.user_type
-        })
+        session_token =request.META.get("HTTP_SESSION_TOKEN")
+
+        if not session_token:
+            return Response({'error': 'Missing session token'}, status=401)
+
+        try:
+            session = UserSession.objects.get(session_token=session_token, is_active=True)
+            if session.expires_at < timezone.now():
+                return Response({'error': 'Session expired'}, status=401)
+
+            user = session.user
+            return Response({
+                'email': user.email,
+                'fullname': user.fullname,
+                'user_type': user.user_type
+            })
+        except UserSession.DoesNotExist:
+            return Response({'error': 'Invalid session'}, status=401)
+
+
 class ProtectedAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -141,53 +156,78 @@ class SocialLoginView(APIView):
         elif provider == "twitter":
             if not code:
                 # Step 1: Redirect to Twitter Auth
+                code_verifier = secrets.token_urlsafe(64)
+                request.session["code_verifier"] = code_verifier
+                code_challenge = code_verifier  # Use 'plain' method for dev; SHA256 for prod
+
                 auth_url = (
                     "https://twitter.com/i/oauth2/authorize"
                     "?response_type=code"
                     f"&client_id={settings.TWITTER_CLIENT_ID}"
                     f"&redirect_uri={settings.TWITTER_CALLBACK_URI}"
                     "&scope=tweet.read users.read offline.access"
-                    "&state=random_state_string"
-                    "&code_challenge=challenge"
+                    "&state=xyz123"  # Ideally, generate a random state
+                    f"&code_challenge={code_challenge}"
                     "&code_challenge_method=plain"
                 )
                 return redirect(auth_url)
             else:
                 # Step 2: Handle Twitter callback
+                code_verifier = request.session.get("code_verifier")
+                if not code_verifier:
+                    return Response({"error": "Missing code_verifier"}, status=400)
+
                 token_resp = requests.post(
-            "https://api.twitter.com/2/oauth2/token",
-                data={
-                    "code": code,
-                    "grant_type": "authorization_code",
-                    "client_id": settings.TWITTER_CLIENT_ID,
-                    "redirect_uri": settings.TWITTER_CALLBACK_URI,
-                    "code_verifier": "challenge"
-                },
-                headers={"Content-Type": "application/x-www-form-urlencoded"}
-            ).json()
+                    "https://api.twitter.com/2/oauth2/token",
+                    data={
+                        "code": code,
+                        "grant_type": "authorization_code",
+                        "client_id": settings.TWITTER_CLIENT_ID,
+                        "redirect_uri": settings.TWITTER_CALLBACK_URI,
+                        "code_verifier": code_verifier,
+                    },
+                    headers={"Content-Type": "application/x-www-form-urlencoded"},
+                )
 
-            access_token = token_resp.get("access_token")
-            if not access_token:
-                return Response({"error": "Failed to retrieve access token from Twitter"}, status=400)
+                if token_resp.status_code != 200:
+                    return Response({"error": "Failed to retrieve access token from Twitter"}, status=400)
 
-            user_info = requests.get(
-                "https://api.twitter.com/2/users/me",
-                headers={"Authorization": f"Bearer {access_token}"}
-            ).json()
+                token_data = token_resp.json()
+                access_token = token_data.get("access_token")
+                if not access_token:
+                    return Response({"error": "No access token received"}, status=400)
 
-            if "data" not in user_info:
-                return Response({"error": "Failed to fetch Twitter user info"}, status=400)
+                user_info = requests.get(
+                    "https://api.twitter.com/2/users/me",
+                    headers={"Authorization": f"Bearer {access_token}"}
+                ).json()
 
-            twitter_id = user_info["data"]["id"]
-            name = user_info["data"]["name"]
-            fake_email = f"{twitter_id}@twitter.fake"
+                if "data" not in user_info:
+                    return Response({"error": "Failed to fetch Twitter user info"}, status=400)
 
-            return self._create_or_login_user(request, fake_email, name)
+                twitter_id = user_info["data"]["id"]
+                name = user_info["data"]["name"]
+                fake_email = f"{twitter_id}@twitter.fake"
 
-            return Response({"error": "Invalid provider"}, status=400)
+                return self._create_or_login_user(request, fake_email, name)
+
+        return Response({"error": "Invalid provider"}, status=400)
 
     def _create_or_login_user(self, request, email, name):
-        user, _ = User.objects.get_or_create(email=email, defaults={"username": email.split('@')[0], "fullname": name})
+        user, created = CustomUser.objects.get_or_create(
+            email=email,
+            defaults={
+                "fullname": name,
+                "user_type": "JOB_SEEKER",   # default user_type
+                "phone": "",                 # required by model, empty by default
+                "is_active": True            # activate social users
+            }
+        )
+
+        if not user.is_active:
+            user.is_active = True
+            user.save()
+
         session_token = uuid.uuid4()
         ip = get_client_ip(request)
         agent = request.META.get("HTTP_USER_AGENT", "")
@@ -208,14 +248,14 @@ class SocialLoginView(APIView):
             "user": {
                 "email": user.email,
                 "fullname": user.fullname,
-                "user_type": user.user_type,
+                "user_type": user.user_type
             }
         })
 
 
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def UserhomePage(request):
     jobs = Job.objects.all().order_by('-posted_at')
     return render(request, 'account/user_home.html',{'jobs': jobs})

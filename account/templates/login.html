@@ -3,90 +3,139 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Social Login Portal</title>
-    <link rel="stylesheet" href="{% static 'login.css' %}" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Montserrat:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Social Login Portal</title>
+  <link rel="stylesheet" href="{% static 'login.css' %}" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Montserrat:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 <body>
-    <div class="social-login-container">
-        <div class="social-login-wrapper">
-            <div class="social-login-header">
-                <h1 class="social-login-title">Welcome Back</h1>
-                <p class="social-login-subtitle">Sign in to continue to your account</p>
-            </div>
-            
-            <!-- Display form errors if they exist -->
-            {% if form.errors %}
-                <div class="error-messages">
-                    {% for field, errors in form.errors.items %}
-                        {% for error in errors %}
-                            <p class="error-message">{{ error }}</p>
-                        {% endfor %}
-                    {% endfor %}
-                </div>
-            {% endif %}
-            
-            <form class="social-login-form" method="POST" action="{% url 'login' %}">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="email" class="form-label">Email Address</label>
-                    <input type="email" id="email" name="email" class="form-input" placeholder="Enter your email" required>
-                    <div class="form-input-underline"></div>
-                </div>
+  <div class="social-login-container">
+    <div class="social-login-wrapper">
+      <div class="social-login-header">
+        <h1 class="social-login-title">Welcome Back</h1>
+        <p class="social-login-subtitle">Sign in to continue to your account</p>
+      </div>
 
-                <div class="form-group">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" id="password" name="password" class="form-input" placeholder="Enter your password" required>
-                    <div class="form-input-underline"></div>
-                    <a href="#" class="forgot-password">Forgot password?</a>
-                </div>
+      <!-- Error container for JS -->
+      <div id="error-container" class="error-messages" style="display: none;"></div>
 
-                <button type="submit" class="form-submit-btn">Sign In</button>
-            </form>
+      <!-- Login form handled via JS -->
+      <form id="loginForm" class="social-login-form">
+        <div class="form-group">
+          <label for="email" class="form-label">Email Address</label>
+          <input type="email" id="email" name="email" class="form-input" placeholder="Enter your email" required>
+          <div class="form-input-underline"></div>
+        </div>
 
-            <div class="social-login-divider">
-                <span class="divider-line"></span>
-                <span class="divider-text">OR</span>
-                <span class="divider-line"></span>
-            </div>
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" id="password" name="password" class="form-input" placeholder="Enter your password"
+            required>
+          <div class="form-input-underline"></div>
+          <a href="#" class="forgot-password">Forgot password?</a>
+        </div>
 
-            <div class="social-login-options">
-    
-    <a href="/social-login/?provider=google" class="social-login-btn google-btn">
-        <span class="social-icon">
+        <button type="submit" class="form-submit-btn">Sign In</button>
+      </form>
+
+      <div class="social-login-divider">
+        <span class="divider-line"></span>
+        <span class="divider-text">OR</span>
+        <span class="divider-line"></span>
+      </div>
+
+      <div class="social-login-options">
+        <a href="/social-login/?provider=google" class="social-login-btn google-btn">
+          <span class="social-icon">
             <i class="fab fa-google"></i>
-        </span>
-        <span class="social-text">Continue with Google</span>
-    </a>
+          </span>
+          <span class="social-text">Continue with Google</span>
+        </a>
 
-    <a href="/social-login/?provider=twitter" class="social-login-btn twitter-btn">
-        <span class="social-icon">
+        <a href="/social-login/?provider=twitter" class="social-login-btn twitter-btn">
+          <span class="social-icon">
             <i class="fab fa-twitter"></i>
-        </span>
-        <span class="social-text">Continue with Twitter</span>
-    </a>
-</div>
+          </span>
+          <span class="social-text">Continue with Twitter</span>
+        </a>
+      </div>
 
-            <div class="social-login-footer">
-                <p class="footer-text">Don't have an account? <a href="{% url 'register' %}" class="footer-link">Sign up</a></p>
-                <p class="footer-text">By continuing, you agree to our <a href="#" class="footer-link">Terms</a> and <a
-                        href="#" class="footer-link">Privacy Policy</a>.</p>
-            </div>
-        </div>
-
-        <div class="social-login-decoration">
-            <div class="decoration-circle circle-1"></div>
-            <div class="decoration-circle circle-2"></div>
-            <div class="decoration-circle circle-3"></div>
-            <div class="decoration-shape shape-1"></div>
-            <div class="decoration-shape shape-2"></div>
-        </div>
+      <div class="social-login-footer">
+        <p class="footer-text">Don't have an account? <a href="{% url 'register' %}" class="footer-link">Sign up</a></p>
+        <p class="footer-text">By continuing, you agree to our <a href="#" class="footer-link">Terms</a> and <a
+            href="#" class="footer-link">Privacy Policy</a>.</p>
+      </div>
     </div>
+
+    <div class="social-login-decoration">
+      <div class="decoration-circle circle-1"></div>
+      <div class="decoration-circle circle-2"></div>
+      <div class="decoration-circle circle-3"></div>
+      <div class="decoration-shape shape-1"></div>
+      <div class="decoration-shape shape-2"></div>
+    </div>
+  </div>
+
+  <script>
+    const loginForm = document.getElementById('loginForm');
+    const errorContainer = document.getElementById('error-container');
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        const res = await fetch("{% url 'login' %}", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+          },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          localStorage.setItem('session_token', data.session_token);
+          window.location.href = '/';
+        } else {
+          showError(data.error || "Invalid credentials.");
+        }
+      } catch (err) {
+        showError("Something went wrong.");
+      }
+    });
+
+    function showError(msg) {
+      errorContainer.style.display = "block";
+      errorContainer.innerHTML = `<p class="error-message">${msg}</p>`;
+    }
+
+    // CSRF helper for fetch
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+  </script>
 </body>
+
 </html>

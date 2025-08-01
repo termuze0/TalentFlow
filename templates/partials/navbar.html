@@ -1,23 +1,57 @@
 <nav class="navbar">
   <a href="{% url 'home' %}" class="brand">TalentFlow</a>
-  <ul class="nav-links">
+  <ul class="nav-links" id="navLinks">
     <li><a href="{% url 'home' %}">Home</a></li>
     <li><a href="{% url 'job_list' %}">Jobs</a></li>
-
-    {% if user.is_authenticated %}
-      <li class="profile-menu">
-        <span class="username" id="usernameToggle">{{ user.get_full_name|default:user.username }}</span>
-
-        <ul class="dropdown" id="profileDropdown">
-          <li><a href="#">Profile</a></li>
-          <li><a href="#">Settings</a></li>
-          <li><a href="#">Dark Mode</a></li>
-          <li><a href="#">Logout</a></li>
-        </ul>
-      </li>
-    {% else %}
-      <li><a href="{% url 'login' %}">Login</a></li>
-      <li><a href="{% url 'register' %}">Register</a></li>
-    {% endif %}
+    <!-- User links will be inserted here via JS -->
   </ul>
 </nav>
+
+<script>
+  const navLinks = document.getElementById('navLinks');
+  const token = localStorage.getItem("session_token");
+
+  if (token) {
+    fetch('/user-info', {
+      method: 'GET',
+      headers: {
+        'Session-Token': token
+      }
+    })
+    .then(res => {
+      if (!res.ok) throw new Error();
+      return res.json();
+    })
+    .then(data => {
+      // Append user profile dropdown
+      navLinks.innerHTML += `
+        <li class="profile-menu">
+          <span class="username" id="usernameToggle">${data.fullname}</span>
+          <ul class="dropdown" id="profileDropdown">
+            <li><a href="#">Profile</a></li>
+            <li><a href="#">Settings</a></li>
+            <li><a href="#">Dark Mode</a></li>
+            <li><a href="#" onclick="logout()">Logout</a></li>
+          </ul>
+        </li>
+      `;
+    })
+    .catch(() => {
+      renderGuestLinks();
+    });
+  } else {
+    renderGuestLinks();
+  }
+
+  function renderGuestLinks() {
+    navLinks.innerHTML += `
+      <li><a href="{% url 'login' %}">Login</a></li>
+      <li><a href="{% url 'register' %}">Register</a></li>
+    `;
+  }
+
+  function logout() {
+    localStorage.removeItem("session_token");
+    window.location.href = "{% url 'login' %}";
+  }
+</script>

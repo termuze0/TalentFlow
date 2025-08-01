@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RegisterView,LandingPage,LoginView,ProtectedAPIView,UserhomePage,SocialLoginView
+from .views import RegisterView,LandingPage,LoginView,ProtectedAPIView,UserhomePage,SocialLoginView,UserInfoView
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
@@ -10,5 +10,7 @@ urlpatterns = [
     path('home/', UserhomePage, name='home'),
     path("social-login/", SocialLoginView.as_view(), name="social_login"),
     path("oauth2/callback/google/", SocialLoginView.as_view()),
+    path('user-info/', UserInfoView.as_view(), name='user-info'),
+
 
 ]
