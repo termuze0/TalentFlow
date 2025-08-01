@@ -106,7 +106,7 @@
 
         if (res.ok) {
           localStorage.setItem('session_token', data.session_token);
-          window.location.href = '/';
+          window.location.href = '/home';
         } else {
           showError(data.error || "Invalid credentials.");
         }

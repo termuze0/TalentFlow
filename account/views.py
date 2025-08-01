@@ -15,7 +15,7 @@ from django.conf import settings
 import requests
 import secrets
 
-from jobs.models import Job
+from jobs.models import Job, Category
 import uuid
 def LandingPage(request):
     return render(request, 'landing.html')
@@ -258,4 +258,6 @@ class SocialLoginView(APIView):
 @api_view(['GET'])
 def UserhomePage(request):
     jobs = Job.objects.all().order_by('-posted_at')
-    return render(request, 'account/user_home.html',{'jobs': jobs})
+    categories = Category.objects.all()
+    locations = Job.objects.values_list('location', flat=True).distinct()
+    return render(request, 'account/user_home.html',{'jobs': jobs,"categories": categories, "locations": locations})
