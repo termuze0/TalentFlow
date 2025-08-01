@@ -1,0 +1,249 @@
+{% load static %}
+{% include 'partials/navbar.html' %}
+<div class="job-detail-container">
+    <div class="job-detail-card">
+        <div class="job-detail-header">
+            <h1 class="job-title">{{ job.title }}</h1>
+            <p class="employer">Posted by: {{ job.employer.fullname }}</p>
+            
+            <div class="job-meta">
+                <span class="location">📍 {{ job.location }}</span>
+                <span class="job-type">{{ job.job_type.name }}</span>
+                <span class="category">{{ job.category.name }}</span>
+                {% if job.salary %}
+                    <span class="salary">💰 ${{ job.salary|floatformat:"0" }}</span>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="job-detail-content">
+            <div class="job-section">
+                <h2>Job Description</h2>
+                <div class="job-description">
+                    {{ job.description|linebreaks }}
+                </div>
+            </div>
+            
+            <div class="job-section">
+                <h2>Requirements</h2>
+                <div class="job-requirements">
+                    {{ job.requirements|linebreaks }}
+                </div>
+            </div>
+            
+            {% if job.tags.all %}
+            <div class="job-section">
+                <h2>Tags</h2>
+                <div class="tags">
+                    {% for tag in job.tags.all %}
+                        <span class="tag">{{ tag.name }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="deadline-section">
+                <p>⏰ Application Deadline: <strong>{{ job.deadline|date:"F d, Y" }}</strong></p>
+            </div>
+        </div>
+        
+        <div class="application-section">
+            <h2>Apply for this Position</h2>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="full_name">Full Name</label>
+                    <input type="text" id="full_name" name="full_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="resume">Resume (PDF only, max 5MB)</label>
+                    <input type="file" id="resume" name="resume" accept=".pdf" required>
+                </div>
+                <div class="form-group">
+                    <label for="cover_letter">Cover Letter (Optional)</label>
+                    <textarea id="cover_letter" name="cover_letter" rows="5"></textarea>
+                </div>
+                <button type="submit" class="apply-button">Submit Application</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.job-detail-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+.job-detail-card {
+    background: rgba(228, 218, 218, 0.925);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.job-detail-header {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.job-title {
+    color: #2c3e50;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.8rem;
+}
+
+.employer {
+    color: #555;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+.job-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.job-meta span {
+    background: #f5f5f5;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.salary {
+    background: #e8f5e9 !important;
+    color: #2e7d32;
+    font-weight: 500;
+}
+
+.job-section {
+    margin-bottom: 2rem;
+}
+
+.job-section h2 {
+    color: #2c3e50;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+}
+
+.job-description, .job-requirements {
+    line-height: 1.6;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag {
+    background: #e3f2fd;
+    color: #1976d2;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.deadline-section {
+    background: #fff8e1;
+    padding: 1rem;
+    border-radius: 4px;
+    margin: 2rem 0;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.deadline-section strong {
+    color: #d32f2f;
+}
+
+.application-section {
+    background: #f5f5f5;
+    padding: 2rem;
+    border-radius: 8px;
+    margin-top: 2rem;
+}
+
+.application-section h2 {
+    margin-top: 0;
+    color: #2c3e50;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #444;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="file"],
+.form-group textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.form-group textarea {
+    min-height: 120px;
+}
+
+.apply-button {
+    background: #1976d2;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.apply-button:hover {
+    background: #1565c0;
+}
+
+@media (max-width: 768px) {
+    .job-detail-container {
+        padding: 1rem;
+    }
+    
+    .job-detail-card {
+        padding: 1.5rem;
+    }
+    
+    .job-meta {
+        gap: 0.5rem;
+    }
+    
+    .job-meta span {
+        font-size: 0.8rem;
+        padding: 0.3rem 0.6rem;
+    }
+}
+</style>

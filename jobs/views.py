@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from .models import Job,Category
 from django.core.paginator import Paginator
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 
 
 def job_list_view(request):
@@ -39,4 +39,4 @@ def job_list_view(request):
 
 def job_detail_view(request, pk):
     job = get_object_or_404(Job, pk=pk)
-    return render(request, "account/job_detail.html", {"job": job})
+    return render(request, "jobs/job_detail.html", {"job": job})
