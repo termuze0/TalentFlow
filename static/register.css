@@ -1,18 +1,4 @@
-/* =============== BASE STYLES =============== */
-:root {
-    --primary: #4361ee;
-    --primary-light: #4895ef;
-    --secondary: #3f37c9;
-    --dark: #1a1a2e;
-    --dark-alt: #16213e;
-    --light: #f8f9fa;
-    --gray: #6c757d;
-    --gray-light: #e9ecef;
-    --danger: #f72585;
-    --success: #4cc9f0;
-    --warning: #f8961e;
-}
-
+/* Base Styles */
 * {
     margin: 0;
     padding: 0;
@@ -20,103 +6,117 @@
 }
 
 body {
-    font-family: 'Poppins', 'Roboto', sans-serif;
-    background-color: var(--light);
-    color: var(--dark);
-    line-height: 1.6;
-    overflow-x: hidden;
+    font-family: 'Poppins', sans-serif;
+    background-color: #93c5f7;
+    color: #1e293b;
+    line-height: 1.4;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1rem;
+    overflow: hidden;
+    padding: 16px;
 }
 
-/* =============== AUTH CONTAINER =============== */
+/* Container Styles */
 .auth-container {
     position: relative;
     width: 100%;
-    max-width: 1200px;
-    margin:  auto;
+    max-width: 700px; /* Reduced from 1200px for better mobile-first approach */
+    padding: 1.5rem;
     display: flex;
     justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    min-height: auto; /* Remove min-height: 100vh */
     overflow: hidden;
 }
 
 .auth-card {
     position: relative;
     z-index: 10;
-    background-color: white;
+    background-color: #fff;
     border-radius: 16px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-    padding: 3rem;
-    width: 60%;
+    padding: 0 2rem;
+    width: 100%;
+    max-height: 92vh; /* Ensure it never exceeds viewport height */
     
     transition: all 0.3s ease;
 }
 
-.auth-card:hover {
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-}
-
-/* =============== HEADER STYLES =============== */
+/* Header Styles */
 .auth-header {
     text-align: center;
-    margin-bottom: 2.5rem;
+    margin-bottom: 1rem;
 }
 
 .auth-title {
     font-family: 'Montserrat', sans-serif;
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 700;
-    color: var(--dark);
-    margin-bottom: 0.5rem;
-    background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
 .auth-subtitle {
-    font-size: 1rem;
-    color: var(--gray);
+    font-size: 0.85rem;
+    color: #64748b;
     font-weight: 400;
 }
 
-/* =============== FORM STYLES =============== */
+/* Error Messages */
+.auth-errors {
+    background-color: #fef2f2;
+    border-left: 3px solid #ef4444;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+.auth-error {
+    color: #b91c1c;
+    margin-bottom: 0.2rem;
+    line-height: 1.3;
+}
+
+.auth-error:last-child {
+    margin-bottom: 0;
+}
+
+/* Form Styles */
 .auth-form {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 .form-field {
     position: relative;
-    margin-bottom: 1.75rem;
+    margin-bottom: 0.8rem;
 }
 
 .field-label {
     display: block;
-    font-size: 0.9rem;
-    color: var(--dark);
-    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+    color: #475569;
+    margin-bottom: 0.3rem;
     font-weight: 500;
-    transition: all 0.3s ease;
 }
 
 .field-input {
     width: 100%;
-    padding: 0.75rem 0;
-    font-size: 1rem;
+    padding: 0.6rem 0;
+    font-size: 0.9rem;
     border: none;
-    border-bottom: 1px solid var(--gray-light);
+    border-bottom: 1px solid #e2e8f0;
     outline: none;
     background: transparent;
-    transition: all 0.3s ease;
 }
 
 .field-input:focus {
-    border-bottom-color: var(--primary);
+    border-bottom-color: #3b82f6;
 }
 
 .field-select {
@@ -125,204 +125,129 @@ body {
     background-repeat: no-repeat;
     background-position: right 0.5rem center;
     background-size: 1rem;
-}
-
-.field-underline {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--primary), var(--primary-light));
-    transition: all 0.3s ease;
-}
-
-.field-input:focus ~ .field-underline {
-    width: 100%;
-}
-
-.field-hint {
-    font-size: 0.75rem;
-    color: var(--gray);
-    margin-top: 0.5rem;
+    padding-right: 1.5rem;
 }
 
 .password-wrapper {
     position: relative;
+    display: flex;
+    align-items: center;
 }
 
 .password-toggle {
     position: absolute;
     right: 0;
-    top: 50%;
-    transform: translateY(-50%);
     background: none;
     border: none;
-    color: var(--gray);
+    color: #94a3b8;
     cursor: pointer;
-    padding: 0.5rem;
+    padding: 0.3rem;
+    font-size: 0.9rem;
 }
 
-/* =============== BUTTON STYLES =============== */
+.field-hint {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    margin-top: 0.2rem;
+}
+
+/* Submit Button */
 .auth-submit-btn {
     width: 100%;
-    padding: 1rem;
+    padding: 0.9rem;
     font-size: 1rem;
     font-weight: 600;
     color: white;
-    background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    background: linear-gradient(90deg, #3498db, #2ecc71);
     border: none;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-top: 1rem;
-    box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
+    
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
 }
 
-.auth-submit-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
-}
-
-.auth-submit-btn:active {
-    transform: translateY(0);
-}
-
-/* =============== ERROR STYLES =============== */
-.auth-errors {
-    background-color: #fdecea;
-    border-left: 4px solid var(--danger);
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-    border-radius: 4px;
-}
-
-.auth-error {
-    color: var(--danger);
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-}
-
-.auth-error:last-child {
-    margin-bottom: 0;
-}
-
-/* =============== DIVIDER STYLES =============== */
+/* Divider */
 .auth-divider {
     display: flex;
     align-items: center;
-    margin: 1.5rem 0;
+    margin: 0.8rem 0;
 }
 
 .divider-line {
     flex: 1;
     height: 1px;
-    background-color: var(--gray-light);
+    background-color: #e2e8f0;
 }
 
 .divider-text {
-    padding: 0 1rem;
-    color: var(--gray);
-    font-size: 0.9rem;
+    padding: 0 0.8rem;
+    color: #94a3b8;
+    font-size: 0.8rem;
     font-weight: 500;
 }
 
-/* =============== SOCIAL BUTTONS =============== */
-.auth-social {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-bottom: 2rem;
+.social-login-options {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem; /* spacing between buttons */
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  flex-wrap: wrap; /* optional: allows wrapping on small screens */
 }
 
-.social-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.8rem;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 1px solid var(--gray-light);
-    background-color: white;
-    color: var(--gray);
+.social-login-btn {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  text-decoration: none;
+  color: white;
+  transition: background 0.3s ease;
 }
 
-.social-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+.google-btn {
+  background-color: #db4437;
+}
+
+.twitter-btn {
+  background-color: #1da1f2;
 }
 
 .social-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 0.75rem;
-    font-size: 1.2rem;
+  margin-right: 8px;
+  font-size: 1.2rem;
 }
 
 .social-text {
-    flex: 1;
-    text-align: center;
+  white-space: nowrap;
 }
 
-.google-btn:hover {
-    border-color: #DB4437;
-    color: #DB4437;
-}
-
-.linkedin-btn:hover {
-    border-color: #0077B5;
-    color: #0077B5;
-}
-
-/* =============== FOOTER STYLES =============== */
+/* Footer */
 .auth-footer {
     text-align: center;
-    margin-top: 2rem;
-}
-
-.footer-text {
-    font-size: 0.9rem;
-    color: var(--gray);
-    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+    color: #64748b;
+    line-height: 1.4;
 }
 
 .footer-link {
-    color: var(--primary);
+    color: #3b82f6;
     text-decoration: none;
     font-weight: 500;
-    transition: color 0.3s ease;
 }
 
-.footer-link:hover {
-    color: var(--secondary);
-    text-decoration: underline;
-}
-
-/* =============== DECORATION ELEMENTS =============== */
-.auth-decorations {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-}
-
-.decor-circle {
+/* Decoration Elements */
+.decoration-circle {
     position: absolute;
     border-radius: 50%;
-    background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(72, 149, 239, 0.1));
-    z-index: 1;
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(46, 204, 113, 0.1));
+    z-index: 1000;
 }
 
-.decor-circle-1 {
+.circle-1 {
     width: 300px;
     height: 300px;
     top: -100px;
@@ -330,7 +255,7 @@ body {
     animation: float 8s ease-in-out infinite;
 }
 
-.decor-circle-2 {
+.circle-2 {
     width: 200px;
     height: 200px;
     bottom: -50px;
@@ -338,30 +263,41 @@ body {
     animation: float 10s ease-in-out infinite reverse;
 }
 
-.decor-blob {
-    position: absolute;
-    background: linear-gradient(135deg, rgba(67, 97, 238, 0.05), rgba(72, 149, 239, 0.05));
-    z-index: 1;
-    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+.circle-3 {
+    width: 150px;
+    height: 150px;
+    top: 50%;
+    right: 10%;
+    animation: float 7s ease-in-out infinite 2s;
 }
 
-.decor-blob-1 {
+.decoration-shape {
+    position: absolute;
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.05), rgba(46, 204, 113, 0.05));
+    z-index: 1;
+}
+
+.shape-1 {
     width: 250px;
     height: 250px;
+    border-radius: 30px;
     bottom: 10%;
     left: 5%;
+    transform: rotate(45deg);
     animation: float 9s ease-in-out infinite 1s;
 }
 
-.decor-blob-2 {
+.shape-2 {
     width: 180px;
     height: 180px;
+    border-radius: 40px;
     top: 20%;
     right: 5%;
+    transform: rotate(20deg);
     animation: float 11s ease-in-out infinite;
 }
 
-/* =============== ANIMATIONS =============== */
+/* Animations */
 @keyframes float {
     0% {
         transform: translateY(0) rotate(0deg);
@@ -374,48 +310,18 @@ body {
     }
 }
 
-/* =============== RESPONSIVE DESIGN =============== */
-@media (max-width: 768px) {
-    .auth-card {
-        padding: 2rem;
-    }
-    
-    .auth-title {
-        font-size: 1.8rem;
-    }
-    
-    .decor-circle-1 {
-        width: 200px;
-        height: 200px;
-        top: -50px;
-        left: -50px;
-    }
-    
-    .decor-circle-2 {
-        width: 150px;
-        height: 150px;
-    }
-    
-    .decor-blob-1, .decor-blob-2 {
-        display: none;
-    }
-}
-
+/* Responsive Adjustments */
 @media (max-width: 480px) {
     .auth-card {
-        padding: 1.5rem;
+        padding: 1.25rem;
     }
     
     .auth-title {
-        font-size: 1.5rem;
+        font-size: 1.4rem;
     }
     
     .auth-subtitle {
-        font-size: 0.9rem;
-    }
-    
-    .auth-submit-btn, .social-btn {
-        padding: 0.75rem;
+        font-size: 0.8rem;
     }
     
     .decor-circle-1, .decor-circle-2 {
@@ -423,51 +329,7 @@ body {
     }
 }
 
-/* =============== DARK MODE =============== */
-@media (prefers-color-scheme: dark) {
-    body {
-        background-color: var(--dark-alt);
-    }
-    
-    .auth-card {
-        background-color: var(--dark);
-        color: var(--light);
-    }
-    
-    .auth-title, .field-label {
-        color: var(--light);
-    }
-    
-    .auth-subtitle, .footer-text {
-        color: var(--gray-light);
-    }
-    
-    .field-input {
-        color: var(--light);
-        border-bottom-color: var(--gray);
-    }
-    
-    .social-btn {
-        background-color: var(--dark);
-        color: var(--light);
-        border-color: var(--gray);
-    }
-    
-    .google-btn:hover {
-        background-color: #DB4437;
-        color: white;
-    }
-    
-    .linkedin-btn:hover {
-        background-color: #0077B5;
-        color: white;
-    }
-    
-    .footer-link {
-        color: var(--primary-light);
-    }
-    
-    .divider-line {
-        background-color: var(--gray);
-    }
+/* Focus Effects */
+.field-input:focus ~ .field-label {
+    color: #3b82f6;
 }

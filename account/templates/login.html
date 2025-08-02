@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Social Login Portal</title>
+  <title>Login | TalentHub</title>
   <link rel="stylesheet" href="{% static 'login.css' %}" />
   <link
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Montserrat:wght@400;500;600;700&display=swap"
@@ -22,10 +22,9 @@
         <p class="social-login-subtitle">Sign in to continue to your account</p>
       </div>
 
-      <!-- Error container for JS -->
+      <!-- ✅ Fixed closing tag -->
       <div id="error-container" class="error-messages" style="display: none;"></div>
 
-      <!-- Login form handled via JS -->
       <form id="loginForm" class="social-login-form">
         <div class="form-group">
           <label for="email" class="form-label">Email Address</label>
@@ -68,10 +67,8 @@
 
       <div class="social-login-footer">
         <p class="footer-text">Don't have an account? <a href="{% url 'register' %}" class="footer-link">Sign up</a></p>
-        <p class="footer-text">By continuing, you agree to our <a href="#" class="footer-link">Terms</a> and <a
-            href="#" class="footer-link">Privacy Policy</a>.</p>
       </div>
-    </div>
+    </div> <!-- ✅ Closed .social-login-wrapper -->
 
     <div class="social-login-decoration">
       <div class="decoration-circle circle-1"></div>
@@ -83,58 +80,63 @@
   </div>
 
   <script>
-    const loginForm = document.getElementById('loginForm');
-    const errorContainer = document.getElementById('error-container');
+    document.addEventListener('DOMContentLoaded', function () {
+      const loginForm = document.getElementById('loginForm');
+      const errorContainer = document.getElementById('error-container');
 
-    loginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
+      if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
 
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+          const email = document.getElementById('email').value;
+          const password = document.getElementById('password').value;
 
-      try {
-        const res = await fetch("{% url 'login' %}", {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
-          },
-          body: JSON.stringify({ email, password })
+          try {
+            const res = await fetch("{% url 'login' %}", {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+              },
+              body: JSON.stringify({ email, password })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+              localStorage.setItem('session_token', data.session_token);
+              window.location.href = '/home';
+            } else {
+              showError(data.error || "Invalid credentials.");
+            }
+          } catch (err) {
+            showError("Something went wrong.");
+          }
         });
-
-        const data = await res.json();
-
-        if (res.ok) {
-          localStorage.setItem('session_token', data.session_token);
-          window.location.href = '/home';
-        } else {
-          showError(data.error || "Invalid credentials.");
-        }
-      } catch (err) {
-        showError("Something went wrong.");
       }
-    });
 
-    function showError(msg) {
-      errorContainer.style.display = "block";
-      errorContainer.innerHTML = `<p class="error-message">${msg}</p>`;
-    }
+      function showError(msg) {
+        if (errorContainer) {
+          errorContainer.style.display = "block";
+          errorContainer.innerHTML = `<p class="error-message">${msg}</p>`;
+        }
+      }
 
-    // CSRF helper for fetch
-    function getCookie(name) {
-      let cookieValue = null;
-      if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-          const cookie = cookies[i].trim();
-          if (cookie.substring(0, name.length + 1) === (name + '=')) {
-            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-            break;
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+            }
           }
         }
+        return cookieValue;
       }
-      return cookieValue;
-    }
+    });
   </script>
 </body>
 

@@ -7,7 +7,7 @@
 
 body {
     font-family: 'Poppins', 'Roboto', sans-serif;
-    background-color: #f8f9fa;
+    background-color: #93c5f7;
     color: #333;
     line-height: 1.6;
     overflow-x: hidden;
@@ -21,13 +21,11 @@ body {
 .social-login-container {
     position: relative;
     width: 100%;
-    max-width: 1200px;
-    margin: auto;
-    padding: 2rem;
+    max-width: 700px; /* Reduced from 1200px for better mobile-first approach */
+    padding: 1.5rem;
     display: flex;
     justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    min-height: auto; /* Remove min-height: 100vh */
     overflow: hidden;
 }
 
@@ -37,8 +35,9 @@ body {
     background-color: #fff;
     border-radius: 16px;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-    padding: 3rem;
-    width: 65%;
+    padding: 0 2rem;
+    width: 100%;
+    max-height: 92vh; /* Ensure it never exceeds viewport height */
     
     transition: all 0.3s ease;
 }
@@ -196,80 +195,42 @@ body {
     font-weight: 500;
 }
 
-/* Social Login Options */
 .social-login-options {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-bottom: 2rem;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem; /* spacing between buttons */
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  flex-wrap: wrap; /* optional: allows wrapping on small screens */
 }
 
 .social-login-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.8rem;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 1px solid transparent;
-}
-
-.social-login-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.social-login-btn:active {
-    transform: translateY(0);
-}
-
-.social-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 0.75rem;
-    font-size: 1.2rem;
-}
-
-.social-text {
-    flex: 1;
-    text-align: center;
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  text-decoration: none;
+  color: white;
+  transition: background 0.3s ease;
 }
 
 .google-btn {
-    background-color: #fff;
-    color: #757575;
-    border-color: #ddd;
+  background-color: #db4437;
 }
 
-.google-btn:hover {
-    border-color: #db4437;
-    color: #db4437;
+.twitter-btn {
+  background-color: #1da1f2;
 }
 
-.microsoft-btn {
-    background-color: #fff;
-    color: #757575;
-    border-color: #ddd;
+.social-icon {
+  margin-right: 8px;
+  font-size: 1.2rem;
 }
 
-.microsoft-btn:hover {
-    border-color: #0078d7;
-    color: #0078d7;
-}
-
-.github-btn {
-    background-color: #fff;
-    color: #757575;
-    border-color: #ddd;
-}
-
-.github-btn:hover {
-    border-color: #333;
-    color: #333;
+.social-text {
+  white-space: nowrap;
 }
 
 /* Footer Styles */
