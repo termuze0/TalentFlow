@@ -73,7 +73,8 @@
         
         <div class="application-section">
             <h2><i class="fas fa-paper-plane"></i> Apply for this Position</h2>
-            <form method="post" enctype="multipart/form-data">
+            <form method="post" enctype="multipart/form-data" action="{% url 'apply-job' job.id %}">
+
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="full_name">Full Name</label>
@@ -506,24 +507,36 @@ body {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Scroll to application form when mobile apply button is clicked
-    const applyMobileBtn = document.querySelector('.apply-button-mobile');
-    const applicationSection = document.querySelector('.application-section');
+    const applyForm = document.querySelector('.application-section form');
+    const applyButton = document.querySelector('.apply-button');
     
-    if (applyMobileBtn && applicationSection) {
-        applyMobileBtn.addEventListener('click', function() {
-            applicationSection.scrollIntoView({ behavior: 'smooth' });
-        });
-    }
-    
-    // Show selected file name for resume upload
-    const fileInput = document.getElementById('resume');
-    const fileUploadLabel = document.querySelector('.file-upload-label span');
-    
-    if (fileInput && fileUploadLabel) {
-        fileInput.addEventListener('change', function() {
-            if (this.files && this.files.length > 0) {
-                fileUploadLabel.textContent = this.files[0].name;
+    if (applyForm) {
+        applyForm.addEventListener('submit', async function(e) {
+            e.preventDefault(); 
+
+            const formData = new FormData(applyForm);
+            const sessionToken = localStorage.getItem('session_token');  
+            try {
+                const response = await fetch(applyForm.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-Session-Token': sessionToken || ''
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert("Application submitted successfully.");
+                    window.location.reload();
+                } else {
+                    alert(data.error || "An error occurred.");
+                }
+            } catch (error) {
+                console.error("Error submitting form:", error);
+                alert("Something went wrong.");
             }
         });
     }
