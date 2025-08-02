@@ -1,6 +1,6 @@
 from django.views import View
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from .models import JobApplication, ApplicationStatus
 from jobs.models import Job
 from account.models import UserSession
@@ -45,3 +45,31 @@ class ApplyJobView(View):
         ApplicationStatus.objects.create(application=application, status='APPLIED')
 
         return JsonResponse({'message': 'Application submitted successfully'}, status=201)
+@method_decorator(csrf_exempt, name='dispatch')
+class MyApplicationsView(View):
+    def get(self, request):
+        return render(request, 'my_applications.html')
+
+    def post(self, request):
+        session_token = request.headers.get('Session-Token') 
+
+        if not session_token:
+            return JsonResponse({'error': 'Missing session token'}, status=401)
+
+        try:
+            session = UserSession.objects.get(session_token=session_token, is_active=True)
+            if session.expires_at < timezone.now():
+                return JsonResponse({'error': 'Session expired'}, status=401)
+            user = session.user
+        except UserSession.DoesNotExist:
+            return JsonResponse({'error': 'Invalid session token'}, status=401)
+
+        applications = JobApplication.objects.filter(user=user).select_related('job', 'status').order_by('-submitted_at')
+
+        data = [{
+            'job_title': app.job.title,
+            'submitted_at': app.submitted_at.strftime('%Y-%m-%d %H:%M'),
+            'status': app.status.status if hasattr(app, 'status') else 'UNKNOWN'
+        } for app in applications]
+
+        return JsonResponse({'applications': data}, status=200)

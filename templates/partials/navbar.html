@@ -3,7 +3,7 @@
   <ul class="nav-links" id="navLinks">
     <li><a href="{% url 'home' %}">Home</a></li>
     <li><a href="{% url 'job_list' %}">Jobs</a></li>
-    <!-- User links will be inserted here via JS -->
+    
   </ul>
 </nav>
 
@@ -22,20 +22,21 @@
       if (!res.ok) throw new Error();
       return res.json();
     })
-    .then(data => {
-      // Append user profile dropdown
-      navLinks.innerHTML += `
-        <li class="profile-menu">
-          <span class="username" id="usernameToggle">${data.fullname}</span>
-          <ul class="dropdown" id="profileDropdown">
-            <li><a href="#">Profile</a></li>
-            <li><a href="#">Settings</a></li>
-            <li><a href="#">Dark Mode</a></li>
-            <li><a href="#" onclick="logout()">Logout</a></li>
-          </ul>
-        </li>
-      `;
-    })
+   .then(data => {
+  navLinks.innerHTML += `
+    <li><a href="/my-applications/">My Applications</a></li>
+    <li class="profile-menu">
+      <span class="username" id="usernameToggle">${data.fullname}</span>
+      <ul class="dropdown" id="profileDropdown">
+        <li><a href="#">Profile</a></li>
+        <li><a href="#">Settings</a></li>
+        <li><a href="#">Dark Mode</a></li>
+        <li><a href="#" onclick="logout()">Logout</a></li>
+      </ul>
+    </li>
+  `;
+})
+
     .catch(() => {
       renderGuestLinks();
     });
