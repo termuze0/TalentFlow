@@ -1,120 +1,326 @@
-
+{% load static %}
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>{{ job.title }} - Job Details</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ job.title }} | CareerConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f8f9fa;
-      padding: 2rem;
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3f37c9;
+      --accent-color: #4cc9f0;
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+      --success-color: #4bb543;
+      --warning-color: #f0ad4e;
+      --danger-color: #d9534f;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
     }
-
-    .job-detail-container {
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      line-height: 1.6;
+      color: var(--dark-color);
+      background-color: #f5f7fa;
+      padding: 0;
+    }
+    
+    .container {
       max-width: 800px;
       margin: 0 auto;
-      background: #fff;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      padding: 20px;
     }
-
-    .job-detail-header {
+    
+    .job-detail-card {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 30px;
+      margin-top: 30px;
+      border-left: 4px solid var(--primary-color);
+    }
+    
+    .job-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 1rem;
+      margin-bottom: 20px;
     }
-
+    
     .job-title {
       font-size: 2rem;
-      color: #2c3e50;
-      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--secondary-color);
+      margin-bottom: 10px;
     }
-
+    
     .job-meta {
-      font-size: 0.95rem;
-      color: #777;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 20px;
     }
-
-    .job-description,
-    .job-requirements {
-      margin-top: 1.5rem;
+    
+    .job-meta span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.9rem;
+      color: #666;
     }
-
-    .job-description h3,
-    .job-requirements h3 {
-      font-size: 1.2rem;
-      margin-bottom: 0.5rem;
-      color: #34495e;
+    
+    .job-section {
+      margin-bottom: 25px;
     }
-
-    .apply-button-mobile {
-      background-color: #1976d2;
-      color: white;
+    
+    .job-section h3 {
+      font-size: 1.3rem;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+      padding-bottom: 5px;
+      border-bottom: 2px solid #eee;
+    }
+    
+    .job-section p {
+      line-height: 1.8;
+      margin-bottom: 15px;
+    }
+    
+    .job-actions {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border-radius: var(--border-radius);
       border: none;
-      padding: 0.6rem 1.2rem;
-      font-size: 0.95rem;
-      border-radius: 5px;
       cursor: pointer;
-      transition: background 0.2s ease;
+      font-weight: 500;
+      transition: var(--transition);
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-
-    .apply-button-mobile.unsave {
-      background-color: #d32f2f;
+    
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
     }
-
-    .apply-button-mobile:hover {
+    
+    .btn-primary:hover {
+      background-color: var(--secondary-color);
+    }
+    
+    .btn-danger {
+      background-color: #ffebee;
+      color: var(--danger-color);
+    }
+    
+    .btn-danger:hover {
+      background-color: #ffcdd2;
+    }
+    
+    .btn-save {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .btn-unsave {
+      background-color: #ffebee;
+      color: var(--danger-color);
+    }
+    
+    .btn-save:hover, .btn-unsave:hover {
       opacity: 0.9;
+    }
+
+    /* Apply Form Styles */
+    .apply-form {
+      margin-top: 30px;
+      padding: 25px;
+      background: #f8f9fa;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+    }
+    
+    .apply-form h3 {
+      font-size: 1.3rem;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      font-family: 'Poppins', sans-serif;
+      transition: var(--transition);
+    }
+    
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+    }
+    
+    textarea.form-control {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    .submit-btn {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+    
+    .submit-btn:hover {
+      background-color: var(--secondary-color);
+    }
+    
+    @media (max-width: 768px) {
+      .job-header {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .job-title {
+        font-size: 1.8rem;
+      }
+      
+      .job-actions {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 <body>
+  {% include 'partials/navbar.html' %}
+  
+  <div class="container">
+    <div class="job-detail-card">
+      <div class="job-header">
+        <div>
+          <h1 class="job-title">{{ job.title }}</h1>
+          <div class="job-meta">
+            <span><i class="fas fa-building"></i> {{ job.employer.fullname }}</span>
+            <span><i class="fas fa-map-marker-alt"></i> {{ job.location }}</span>
+            {% if job.salary %}
+              <span><i class="fas fa-money-bill-wave"></i> ${{ job.salary|floatformat:"0" }}</span>
+            {% endif %}
+            <span><i class="far fa-calendar-alt"></i> {{ job.deadline|date:"M d, Y" }}</span>
+            <span><i class="fas fa-tag"></i> {{ job.category.name }}</span>
+          </div>
+        </div>
+        <button id="save-job-btn" class="btn btn-save" data-job-id="{{ job.id }}">
+          <i class="far fa-bookmark"></i> Save Job
+        </button>
+      </div>
+      
+      <div class="job-section">
+        <h3><i class="fas fa-align-left"></i> Job Description</h3>
+        <p>{{ job.description|linebreaks }}</p>
+      </div>
+      
+      <div class="job-section">
+        <h3><i class="fas fa-clipboard-check"></i> Requirements</h3>
+        <p>{{ job.requirements|linebreaks }}</p>
+      </div>
+      
+      <div class="job-actions">
+        <button class="btn btn-primary" id="show-apply-form">
+          <i class="fas fa-paper-plane"></i> Apply Now
+        </button>
+        <a href="/jobs" class="btn btn-danger">
+          <i class="fas fa-arrow-left"></i> Back to Jobs
+        </a>
+      </div>
 
-<div class="job-detail-container">
-  <div class="job-detail-header">
-    <div>
-      <h1 class="job-title">{{ job.title }}</h1>
-      <div class="job-meta">
-        <p>🏢 {{ job.employer.fullname }}</p>
-        <p>📍 {{ job.location }}</p>
-        {% if job.salary %}
-          <p>💰 ${{ job.salary|floatformat:"0" }}</p>
-        {% endif %}
-        <p>⏰ Deadline: {{ job.deadline|date:"M d, Y" }}</p>
-        <p>📂 Category: {{ job.category.name }}</p>
+      <div class="apply-form" id="apply-form" style="display: none;">
+        <h3><i class="fas fa-edit"></i> Application Form</h3>
+        <form id="job-application-form" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="full_name">Full Name</label>
+            <input type="text" class="form-control" id="full_name" name="full_name" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" class="form-control" id="phone" name="phone" required>
+          </div>
+          <div class="form-group">
+            <label for="resume">Upload Resume (PDF only)</label>
+            <input type="file" class="form-control" id="resume" name="resume" accept=".pdf" required>
+          </div>
+          <div class="form-group">
+            <label for="cover_letter">Cover Letter</label>
+            <textarea class="form-control" id="cover_letter" name="cover_letter" required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">
+            <i class="fas fa-paper-plane"></i> Submit Application
+          </button>
+        </form>
       </div>
     </div>
-    <div>
-      <button id="save-job-btn"
-              class="apply-button-mobile"
-              data-job-id="{{ job.id }}">
-        Save Job
-      </button>
-    </div>
   </div>
-
-  <div class="job-description">
-    <h3>Job Description</h3>
-    <p>{{ job.description|linebreaks }}</p>
-  </div>
-
-  <div class="job-requirements">
-    <h3>Requirements</h3>
-    <p>{{ job.requirements|linebreaks }}</p>
-  </div>
-</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', async function () {
   const saveBtn = document.getElementById('save-job-btn');
   const jobId = saveBtn?.dataset.jobId;
   const token = localStorage.getItem('session_token');
+  const showApplyFormBtn = document.getElementById('show-apply-form');
+  const applyForm = document.getElementById('apply-form');
 
-  if (!saveBtn || !token) return;
+  // Toggle apply form visibility
+  showApplyFormBtn.addEventListener('click', () => {
+    applyForm.style.display = applyForm.style.display === 'none' ? 'block' : 'none';
+  });
 
-  
+  if (!saveBtn || !token) {
+    if (saveBtn) {
+      saveBtn.style.display = 'none';
+    }
+    return;
+  }
+
+  // Check saved status
   try {
     const res = await fetch(`/jobs/saved-jobs/${jobId}/status/`, {
       method: 'GET',
@@ -123,34 +329,117 @@ document.addEventListener('DOMContentLoaded', async function () {
       }
     });
 
-    const data = await res.json();
-    updateButton(data.saved);
+    if (res.ok) {
+      const data = await res.json();
+      updateButton(data.saved);
+    }
   } catch (err) {
-    console.error("Could not check saved status");
+    console.error("Could not check saved status", err);
   }
+
+  // Save/unsave handler
   saveBtn.addEventListener('click', async () => {
     try {
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+      
       const res = await fetch(`/jobs/${jobId}/save/`, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'Session-Token': token
-  },
-});
-      const data = await res.json();
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Session-Token': token
+        },
+      });
+      
       if (res.ok) {
+        const data = await res.json();
         updateButton(data.saved);
+        showToast(data.saved ? 'Job saved successfully!' : 'Job removed from saved jobs');
       } else {
+        const data = await res.json();
         alert(data.error || "Something went wrong.");
       }
     } catch (err) {
       console.error("Error saving job", err);
+      alert("An error occurred. Please try again.");
+    } finally {
+      saveBtn.disabled = false;
     }
   });
 
+  // Form submission handler
+  const applicationForm = document.getElementById('job-application-form');
+  if (applicationForm) {
+    applicationForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(applicationForm);
+      
+      try {
+        const submitBtn = applicationForm.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+        
+        const res = await fetch(`/jobs/${jobId}/apply/`, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Session-Token': token
+          }
+        });
+        console.log(token)
+        if (res.ok) {
+          const data = await res.json();
+          showToast('Application submitted successfully!');
+          applicationForm.reset();
+          applyForm.style.display = 'none';
+        } else {
+          const data = await res.json();
+          alert(data.error || "Failed to submit application");
+        }
+      } catch (err) {
+        console.error("Error submitting application", err);
+        alert("An error occurred. Please try again.");
+      } finally {
+        const submitBtn = applicationForm.querySelector('button[type="submit"]');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Application';
+      }
+    });
+  }
+
   function updateButton(isSaved) {
-    saveBtn.textContent = isSaved ? 'Unsave Job' : 'Save Job';
-    saveBtn.classList.toggle('unsave', isSaved);
+    if (isSaved) {
+      saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Unsave Job';
+      saveBtn.classList.remove('btn-save');
+      saveBtn.classList.add('btn-unsave');
+    } else {
+      saveBtn.innerHTML = '<i class="far fa-bookmark"></i> Save Job';
+      saveBtn.classList.remove('btn-unsave');
+      saveBtn.classList.add('btn-save');
+    }
+  }
+
+  function showToast(message) {
+    const toast = document.createElement('div');
+    toast.style.position = 'fixed';
+    toast.style.bottom = '20px';
+    toast.style.left = '50%';
+    toast.style.transform = 'translateX(-50%)';
+    toast.style.backgroundColor = 'var(--primary-color)';
+    toast.style.color = 'white';
+    toast.style.padding = '12px 24px';
+    toast.style.borderRadius = 'var(--border-radius)';
+    toast.style.boxShadow = 'var(--box-shadow)';
+    toast.style.zIndex = '1000';
+    toast.style.transition = 'all 0.3s ease';
+    toast.textContent = message;
+    
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
   }
 });
 </script>

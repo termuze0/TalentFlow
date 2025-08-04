@@ -17,6 +17,7 @@ import secrets
 
 from jobs.models import Job, Category
 import uuid
+
 def LandingPage(request):
     return render(request, 'landing.html')
 
@@ -38,11 +39,12 @@ class RegisterView(APIView):
                 return redirect('login')  
             return render(request, 'registration/register.html', {'errors': serializer.errors, 'data': request.POST})
 
+from django.shortcuts import redirect
+
 class LoginView(APIView):
-    # authentication_classes = [CustomSessionAuthentication]
-    # permission_classes = [IsAuthenticated]
     def get(self, request):
         return render(request, 'login.html')
+
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
@@ -67,20 +69,20 @@ class LoginView(APIView):
                         is_active=True
                     )
 
-                    return Response({
-                        "message": "Login successful",
-                        "session_token": str(session_token),
-                        "user": {
-                            "email": user.email,
-                            "fullname": user.fullname,
-                            "user_type": user.user_type
-                        }
-                    })
+                    # Store session data
+                    request.session['session_token'] = session_token
+                    request.session['email'] = user.email
+                    request.session['fullname'] = user.fullname
+                    request.session['user_type'] = user.user_type
+
+                    return redirect('/home/')  # redirect with session data
                 else:
-                    return Response({"error": "Invalid credentials"}, status=400)
+                    return render(request, 'login.html', {'error': 'Invalid credentials'})
+
             except (CustomUser.DoesNotExist, UserCredential.DoesNotExist):
-                return Response({"error": "User not found"}, status=404)
-        return Response(serializer.errors, status=400)
+                return render(request, 'login.html', {'error': 'User not found'})
+
+        return render(request, 'login.html', {'errors': serializer.errors})
 
 class UserInfoView(APIView):
     def get(self, request):
@@ -218,9 +220,9 @@ class SocialLoginView(APIView):
             email=email,
             defaults={
                 "fullname": name,
-                "user_type": "JOB_SEEKER",   # default user_type
-                "phone": "",                 # required by model, empty by default
-                "is_active": True            # activate social users
+                "user_type": "JOB_SEEKER",  # default
+                "phone": "",
+                "is_active": True
             }
         )
 
@@ -228,7 +230,7 @@ class SocialLoginView(APIView):
             user.is_active = True
             user.save()
 
-        session_token = uuid.uuid4()
+        session_token = str(uuid.uuid4())
         ip = get_client_ip(request)
         agent = request.META.get("HTTP_USER_AGENT", "")
 
@@ -242,22 +244,32 @@ class SocialLoginView(APIView):
             is_active=True
         )
 
-        return Response({
-            "message": "Social login successful",
-            "session_token": str(session_token),
-            "user": {
-                "email": user.email,
-                "fullname": user.fullname,
-                "user_type": user.user_type
-            }
-        })
+        # ✅ Save session like custom login
+        request.session['session_token'] = session_token
+        request.session['email'] = user.email
+        request.session['fullname'] = user.fullname
+        request.session['user_type'] = user.user_type
 
+        # ✅ Redirect like LoginView
+        return redirect('/home/')
 
 
 
 @api_view(['GET'])
 def UserhomePage(request):
-    jobs = Job.objects.all().order_by('-posted_at')
+    
+
+    jobs = Job.objects.select_related('employer', 'category').order_by('-posted_at')[:50]
     categories = Category.objects.all()
     locations = Job.objects.values_list('location', flat=True).distinct()
-    return render(request, 'account/user_home.html',{'jobs': jobs,"categories": categories, "locations": locations})
+
+    
+    return render(request, 'account/user_home.html', {
+        'jobs': jobs,
+        'categories': categories,
+        'locations': locations,
+        'session_token': request.session.get('session_token'),
+        'fullname': request.session.get('fullname'),
+        'email': request.session.get('email'),
+        'user_type': request.session.get('user_type'),
+    })

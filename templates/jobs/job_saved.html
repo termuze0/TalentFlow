@@ -227,135 +227,132 @@
     
     <p id="error-msg" class="error"></p>
   </div>
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const jobList = document.getElementById("job-list");
-      const errorMsg = document.getElementById("error-msg");
-      const token = localStorage.getItem('session_token');
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const jobList = document.getElementById("job-list");
+    const errorMsg = document.getElementById("error-msg");
+    const token = localStorage.getItem('session_token');
 
-      if (token) {
-        fetchSavedJobs();
+    if (token) {
+      fetchSavedJobs();
+    } else {
+      errorMsg.textContent = 'You need to be logged in to view saved jobs.';
+      jobList.innerHTML = `
+        <div class="empty-state">
+          <i class="fas fa-exclamation-triangle"></i>
+          <h3>Session Expired</h3>
+          <p>Please log in to access your saved jobs.</p>
+        </div>
+      `;
+    }
+  });
+
+  async function fetchSavedJobs() {
+    const jobList = document.getElementById("job-list");
+    const errorMsg = document.getElementById("error-msg");
+    const token = localStorage.getItem('session_token');
+
+    try {
+      const res = await fetch('/jobs/saved/', {
+        method: 'POST',
+        headers: {
+          'Session-Token': token,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!res.ok) throw new Error('Unable to fetch saved jobs. Please try again later.');
+
+      const data = await res.json();
+      jobList.innerHTML = '';
+
+      if (data.saved_jobs.length === 0) {
+        renderEmptyState();
       } else {
-        errorMsg.textContent = 'You need to be logged in to view saved jobs.';
-        jobList.innerHTML = `
-          <div class="empty-state">
-            <i class="fas fa-exclamation-triangle"></i>
-            <h3>Session Expired</h3>
-            <p>Please log in to access your saved jobs.</p>
-          </div>
-        `;
+        data.saved_jobs.forEach(job => {
+          addJobCard(job);
+        });
       }
+    } catch (err) {
+      errorMsg.textContent = err.message;
+      jobList.innerHTML = '';
+    }
+  }
+
+  function renderEmptyState() {
+    const jobList = document.getElementById("job-list");
+    jobList.innerHTML = `
+      <div class="empty-state">
+        <i class="far fa-bookmark"></i>
+        <h3>No Saved Jobs Left</h3>
+        <p>You haven't saved any jobs yet. Start browsing opportunities and save the ones that interest you.</p>
+      </div>
+    `;
+  }
+
+  function addJobCard(job) {
+    const jobList = document.getElementById("job-list");
+    const deadline = new Date(job.deadline).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
-    
-    async function fetchSavedJobs() {
-      const jobList = document.getElementById("job-list");
-      const errorMsg = document.getElementById("error-msg");
-      const token = localStorage.getItem('session_token');
-      
+
+    const jobCard = document.createElement('div');
+    jobCard.className = 'job';
+    jobCard.dataset.jobId = job.id;
+    jobCard.innerHTML = `
+      <h3>${job.title}</h3>
+      <p><strong>Company:</strong> ${job.company || 'Not specified'}</p>
+      <p><strong>Location:</strong> ${job.location}</p>
+      <div class="job-meta">
+        <span><i class="far fa-calendar-alt"></i> ${deadline}</span>
+        <span><i class="fas fa-tag"></i> ${job.category}</span>
+      </div>
+      <div class="job-actions">
+        <button class="btn btn-primary" onclick="window.open('${job.apply_url || '#'}', '_blank')">
+          <i class="fas fa-external-link-alt"></i> Apply Now
+        </button>
+        <button class="btn btn-danger remove-btn" data-job-id="${job.id}">
+          <i class="far fa-trash-alt"></i> Remove
+        </button>
+      </div>
+    `;
+
+    jobList.appendChild(jobCard);
+
+    const removeBtn = jobCard.querySelector('.remove-btn');
+    removeBtn.addEventListener('click', async () => {
       try {
-        const res = await fetch('/jobs/saved/', {
+        const token = localStorage.getItem('session_token');
+        const jobId = removeBtn.dataset.jobId;
+
+        const res = await fetch(`/jobs/${jobId}/save/`, {
           method: 'POST',
           headers: {
             'Session-Token': token,
             'Content-Type': 'application/json'
           }
         });
-        
-        if (!res.ok) throw new Error('Unable to fetch saved jobs. Please try again later.');
-        
-        const data = await res.json();
-        jobList.innerHTML = '';
-        
-        if (data.saved_jobs.length === 0) {
-          jobList.innerHTML = `
-            <div class="empty-state">
-              <i class="far fa-bookmark"></i>
-              <h3>No Saved Jobs Yet</h3>
-              <p>You haven't saved any jobs yet. Start browsing opportunities and save the ones that interest you.</p>
-            </div>
-          `;
-        } else {
-          data.saved_jobs.forEach(job => {
-            addJobCard(job);
-          });
+
+        if (!res.ok) throw new Error('Failed to remove job from saved list.');
+
+        const result = await res.json();
+        if (result.saved === false) {
+          jobCard.remove();
+
+          
+          const remainingJobs = document.querySelectorAll('.job');
+          if (remainingJobs.length === 0) {
+            renderEmptyState();
+          }
         }
       } catch (err) {
-        errorMsg.textContent = err.message;
-        jobList.innerHTML = '';
+        document.getElementById('error-msg').textContent = err.message;
       }
-    }
-    
-    function addJobCard(job) {
-      const jobList = document.getElementById("job-list");
-      const deadline = new Date(job.deadline).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-      
-      const jobCard = document.createElement('div');
-      jobCard.className = 'job';
-      jobCard.dataset.jobId = job.id;
-      jobCard.innerHTML = `
-        <h3>${job.title}</h3>
-        <p><strong>Company:</strong> ${job.company || 'Not specified'}</p>
-        <p><strong>Location:</strong> ${job.location}</p>
-        <div class="job-meta">
-          <span><i class="far fa-calendar-alt"></i> ${deadline}</span>
-          <span><i class="fas fa-tag"></i> ${job.category}</span>
-        </div>
-        <div class="job-actions">
-          <button class="btn btn-primary" onclick="window.open('${job.apply_url || '#'}', '_blank')">
-            <i class="fas fa-external-link-alt"></i> Apply Now
-          </button>
-          <button class="btn btn-danger remove-btn" data-job-id="${job.id}">
-            <i class="far fa-trash-alt"></i> Remove
-          </button>
-        </div>
-      `;
-      
-      jobList.appendChild(jobCard);
-      
-    
-      const removeBtn = jobCard.querySelector('.remove-btn');
-      removeBtn.addEventListener('click', async () => {
-        try {
-          const token = localStorage.getItem('session_token');
-          if (!token) return;
-          
-          const jobId = removeBtn.dataset.jobId;
-          const res = await fetch(`/jobs/${jobId}/save/`, {
-            method: 'POST',
-            headers: {
-              'Session-Token': token,
-              'Content-Type': 'application/json'
-            }
-          });
-          
-          if (!res.ok) throw new Error('Failed to remove job');
-          
-          const data = await res.json();
-          if (data.saved === false) { 
-            jobCard.remove();
-            
-            
-            const jobList = document.getElementById("job-list");
-            if (jobList.children.length === 0) {
-              jobList.innerHTML = `
-                <div class="empty-state">
-                  <i class="far fa-bookmark"></i>
-                  <h3>No Saved Jobs Left</h3>
-                  <p>You've removed all saved jobs. Browse more opportunities to save new ones.</p>
-                </div>
-              `;
-            }
-          }
-        } catch (err) {
-          document.getElementById('error-msg').textContent = err.message;
-        }
-      });
-    }
-  </script>
-  
+    });
+  }
+</script>
+
 </body>
 </html>

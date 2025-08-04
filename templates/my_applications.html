@@ -1,337 +1,363 @@
-{%load static%}
+{% load static %}
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>My Job Applications</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Applications | CareerConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     :root {
-      --primary: #4361ee;
-      --primary-light: #eef2ff;
-      --success: #10b981;
-      --success-light: #ecfdf5;
-      --warning: #f59e0b;
-      --warning-light: #fffbeb;
-      --danger: #ef4444;
-      --danger-light: #fef2f2;
-      --info: #3b82f6;
-      --info-light: #eff6ff;
-      --purple: #8b5cf6;
-      --purple-light: #f5f3ff;
-      --gray-100: #f3f4f6;
-      --gray-200: #e5e7eb;
-      --gray-300: #d1d5db;
-      --gray-500: #6b7280;
-      --gray-700: #374151;
-      --gray-900: #111827;
+      --primary-color: #4361ee;
+      --secondary-color: #3f37c9;
+      --accent-color: #4cc9f0;
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+      --success-color: #4bb543;
+      --warning-color: #f0ad4e;
+      --danger-color: #d9534f;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
     }
     
-    * { 
-      margin: 0; 
-      padding: 0; 
-      box-sizing: border-box; 
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
     
-    body { 
-      background-color: var(--gray-100); 
-      padding: 40px; 
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      color: var(--gray-900);
-      line-height: 1.5;
+    body {
+      font-family: 'Poppins', sans-serif;
+      line-height: 1.6;
+      color: var(--dark-color);
+      background-color: #f5f7fa;
+      padding: 0;
     }
     
-    .container { 
-      max-width: 900px; 
-      margin: auto; 
-      background: white; 
-      border-radius: 16px; 
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.03); 
-      padding: 40px; 
-      overflow: hidden;
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
     }
     
-    h1 { 
-      font-size: 28px; 
-      font-weight: 700;
-      color: var(--gray-900); 
-      margin-bottom: 32px; 
-      display: flex;
-      align-items: center;
-      gap: 12px;
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+      text-align: center;
+      padding-top: 20px;
     }
     
-    h1::before {
-      content: "";
-      display: block;
-      width: 6px;
-      height: 24px;
-      background: var(--primary);
-      border-radius: 3px;
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
     }
     
-    .application { 
-      padding: 24px;
-      border-radius: 12px;
-      transition: all 0.2s ease;
+    #application-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+      margin-top: 30px;
+    }
+    
+    .application {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 25px;
+      transition: var(--transition);
+      border-left: 4px solid var(--primary-color);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
     }
     
     .application:hover {
-      background-color: var(--gray-100);
-      transform: translateY(-2px);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     }
     
-    .job-info {
-      flex: 1;
+    .job-info h3 {
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+      color: var(--secondary-color);
     }
     
-    .job-title { 
-      font-size: 18px; 
-      font-weight: 600;
-      color: var(--gray-900); 
-      margin-bottom: 4px;
+    .job-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 10px;
+    }
+    
+    .job-meta span {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 5px;
+      font-size: 0.85rem;
+      color: #666;
     }
     
-    .company {
-      font-size: 15px;
-      color: var(--gray-500);
-      margin-bottom: 8px;
-    }
-    
-    .submitted-date { 
-      font-size: 13px; 
-      color: var(--gray-500); 
-    }
-    
-    .status-container {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 8px;
-    }
-    
-    .status { 
-      font-size: 13px; 
-      font-weight: 600;
-      padding: 6px 12px;
+    .application-status {
+      padding: 8px 15px;
       border-radius: 20px;
+      font-weight: 500;
+      font-size: 0.9rem;
       text-transform: capitalize;
     }
     
-    .status.applied { 
-      background-color: var(--info-light);
-      color: var(--info);
+    .status-applied {
+      background-color: #eef2ff;
+      color: var(--primary-color);
     }
     
-    .status.reviewing { 
-      background-color: var(--warning-light);
-      color: var(--warning);
+    .status-reviewing {
+      background-color: #fffbeb;
+      color: var(--warning-color);
     }
     
-    .status.interview { 
-      background-color: var(--purple-light);
-      color: var(--purple);
+    .status-interview {
+      background-color: #f5f3ff;
+      color: #8b5cf6;
     }
     
-    .status.offered { 
-      background-color: var(--success-light);
-      color: var(--success);
+    .status-offered {
+      background-color: #ecfdf5;
+      color: var(--success-color);
     }
     
-    .status.rejected { 
-      background-color: var(--danger-light);
-      color: var(--danger);
+    .status-rejected {
+      background-color: #fef2f2;
+      color: var(--danger-color);
     }
     
-    .no-applications { 
-      text-align: center; 
-      color: var(--gray-500); 
-      padding: 60px 20px; 
-      font-size: 16px; 
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
+    .empty-state {
+      text-align: center;
+      padding: 50px 20px;
+      grid-column: 1 / -1;
     }
     
-    .no-applications svg {
-      width: 80px;
-      height: 80px;
-      opacity: 0.5;
+    .empty-state i {
+      font-size: 3rem;
+      color: #ccc;
+      margin-bottom: 15px;
     }
     
-    .no-applications p {
-      max-width: 400px;
-      margin: 0 auto;
+    .empty-state h3 {
+      font-size: 1.5rem;
+      color: #666;
+      margin-bottom: 10px;
+    }
+    
+    .empty-state p {
+      color: #999;
+      max-width: 500px;
+      margin: 0 auto 20px;
     }
     
     .btn {
-      margin-top: 20px;
-      background: var(--primary);
-      color: white;
-      border: none;
       padding: 10px 20px;
-      border-radius: 8px;
-      font-weight: 500;
+      border-radius: var(--border-radius);
+      border: none;
       cursor: pointer;
-      transition: all 0.2s;
+      font-weight: 500;
+      transition: var(--transition);
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
     
-    .btn:hover {
-      background: #3a56d4;
-      transform: translateY(-1px);
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--secondary-color);
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 50px;
+    }
+    
+    .spinner {
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      border-top: 4px solid var(--primary-color);
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    #error-msg {
+      text-align: center;
+      padding: 20px;
+      background-color: #ffebee;
+      color: var(--danger-color);
+      border-radius: var(--border-radius);
+      margin: 20px auto;
+      max-width: 600px;
     }
     
     @media (max-width: 768px) {
-      body {
-        padding: 20px;
-      }
-      
-      .container {
-        padding: 24px;
-      }
-      
       .application {
         flex-direction: column;
         align-items: flex-start;
-        gap: 16px;
+        gap: 15px;
       }
       
-      .status-container {
-        align-items: flex-start;
-        width: 100%;
+      h1 {
+        font-size: 2rem;
       }
     }
   </style>
 </head>
 <body>
-  {%include 'partials/navbar.html'%}
+  {% include 'partials/navbar.html' %}
+  
   <div class="container">
-    <h1>My Applications</h1>
+    <h1>My Job Applications</h1>
+    <p class="subtitle">Track the status of your submitted applications</p>
+    
     <div id="application-list">
-      <!-- Sample application for design preview -->
-      <div class="application">
-        <div class="job-info">
-          <div class="job-title">Senior Product Designer <span class="company">at TechCorp Inc.</span></div>
-          <div class="submitted-date">Applied on June 15, 2023</div>
-        </div>
-        <div class="status-container">
-          <div class="status interview">Interview</div>
-        </div>
-      </div>
-      <div class="application">
-        <div class="job-info">
-          <div class="job-title">Frontend Developer <span class="company">at WebSolutions</span></div>
-          <div class="submitted-date">Applied on June 10, 2023</div>
-        </div>
-        <div class="status-container">
-          <div class="status reviewing">Reviewing</div>
-        </div>
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading your applications...</p>
       </div>
     </div>
-    <div id="no-applications" class="no-applications" style="display: none;">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-      </svg>
-      <p>You haven't applied to any jobs yet.</p>
-      <button class="btn">Browse Jobs</button>
-    </div>
+    
+    <p id="error-msg" class="error"></p>
   </div>
 
   <script>
-    async function fetchApplications() {
+    document.addEventListener("DOMContentLoaded", () => {
+      const applicationList = document.getElementById("application-list");
+      const errorMsg = document.getElementById("error-msg");
       const token = localStorage.getItem('session_token');
-      if (!token) {
-        document.getElementById('application-list').innerHTML = `
-          <div class="no-applications">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            <p>You need to log in to view your applications.</p>
-            <button class="btn" onclick="window.location.href='/login'">Log In</button>
-          </div>`;
-        return;
-      }
 
+      if (token) {
+        fetchApplications();
+      } else {
+        errorMsg.textContent = 'You need to be logged in to view your applications.';
+        applicationList.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h3>Session Expired</h3>
+            <p>Please log in to access your job applications.</p>
+            <button class="btn btn-primary" onclick="window.location.href='/login'">
+              <i class="fas fa-sign-in-alt"></i> Log In
+            </button>
+          </div>
+        `;
+      }
+    });
+    
+    async function fetchApplications() {
+      const applicationList = document.getElementById("application-list");
+      const errorMsg = document.getElementById("error-msg");
+      const token = localStorage.getItem('session_token');
+      
       try {
-        const response = await fetch('/my-applications/', {
+        const res = await fetch('/my-applications/', {
           method: 'POST',
           headers: {
             'Session-Token': token,
             'Content-Type': 'application/json'
           }
         });
-
-        const listEl = document.getElementById('application-list');
-
-        if (!response.ok) {
-          listEl.innerHTML = `
-            <div class="no-applications">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-              <p>We couldn't load your applications. Please try again later.</p>
-              <button class="btn" onclick="fetchApplications()">Retry</button>
-            </div>`;
-          return;
-        }
-
-        const data = await response.json();
-        const applications = data.applications;
-
-        if (applications.length === 0) {
-          document.getElementById('no-applications').style.display = 'flex';
-          document.getElementById('application-list').style.display = 'none';
-          return;
-        }
-
-        listEl.innerHTML = '';
-        applications.forEach(app => {
-          const appDiv = document.createElement('div');
-          appDiv.className = 'application';
-
-          const statusClass = {
-            'APPLIED': 'applied',
-            'REVIEWING': 'reviewing',
-            'INTERVIEW': 'interview',
-            'OFFERED': 'offered',
-            'REJECTED': 'rejected'
-          }[app.status.toUpperCase()] || '';
-
-          appDiv.innerHTML = `
-            <div class="job-info">
-              <div class="job-title">${app.job_title} ${app.company ? `<span class="company">at ${app.company}</span>` : ''}</div>
-              <div class="submitted-date">Applied on ${new Date(app.submitted_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
-            </div>
-            <div class="status-container">
-              <div class="status ${statusClass}">${app.status.toLowerCase()}</div>
+        
+        if (!res.ok) throw new Error('Unable to fetch applications. Please try again later.');
+        
+        const data = await res.json();
+        applicationList.innerHTML = '';
+        
+        if (data.applications.length === 0) {
+          applicationList.innerHTML = `
+            <div class="empty-state">
+              <i class="far fa-file-alt"></i>
+              <h3>No Applications Yet</h3>
+              <p>You haven't applied to any jobs yet. Browse opportunities and submit your applications.</p>
+              <button class="btn btn-primary" onclick="window.location.href='/jobs'">
+                <i class="fas fa-search"></i> Browse Jobs
+              </button>
             </div>
           `;
-
-          listEl.appendChild(appDiv);
-        });
-      } catch (error) {
-        document.getElementById('application-list').innerHTML = `
-          <div class="no-applications">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            <p>We encountered an error while loading your applications.</p>
-            <button class="btn" onclick="fetchApplications()">Try Again</button>
-          </div>`;
+        } else {
+          data.applications.forEach(app => {
+            addApplicationCard(app);
+          });
+        }
+      } catch (err) {
+        errorMsg.textContent = err.message;
+        applicationList.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-exclamation-circle"></i>
+            <h3>Error Loading Applications</h3>
+            <p>We couldn't load your applications. Please try again.</p>
+            <button class="btn btn-primary" onclick="fetchApplications()">
+              <i class="fas fa-sync-alt"></i> Try Again
+            </button>
+          </div>
+        `;
       }
     }
-
-    window.onload = fetchApplications;
+    
+    function addApplicationCard(application) {
+      const applicationList = document.getElementById("application-list");
+      const submittedDate = new Date(application.submitted_at).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      
+      // Determine status class and icon
+      let statusClass = 'status-applied';
+      let statusIcon = 'far fa-paper-plane';
+      
+      if (application.status.toLowerCase().includes('review')) {
+        statusClass = 'status-reviewing';
+        statusIcon = 'fas fa-search';
+      } else if (application.status.toLowerCase().includes('interview')) {
+        statusClass = 'status-interview';
+        statusIcon = 'fas fa-calendar-check';
+      } else if (application.status.toLowerCase().includes('offer')) {
+        statusClass = 'status-offered';
+        statusIcon = 'fas fa-award';
+      } else if (application.status.toLowerCase().includes('reject')) {
+        statusClass = 'status-rejected';
+        statusIcon = 'fas fa-times-circle';
+      }
+      
+      const appCard = document.createElement('div');
+      appCard.className = 'application';
+      appCard.innerHTML = `
+        <div class="job-info">
+          <h3>${application.job_title}</h3>
+          <div class="job-meta">
+            ${application.company ? `<span><i class="fas fa-building"></i> ${application.company}</span>` : ''}
+            <span><i class="far fa-calendar-alt"></i> Applied: ${submittedDate}</span>
+          </div>
+        </div>
+        <div class="application-status ${statusClass}">
+          <i class="${statusIcon}"></i> ${application.status.toLowerCase()}
+        </div>
+      `;
+      
+      applicationList.appendChild(appCard);
+    }
   </script>
 </body>
 </html>

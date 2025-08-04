@@ -7,44 +7,35 @@
   </ul>
 </nav>
 
+
 <script>
-  const navLinks = document.getElementById('navLinks');
-  const token = localStorage.getItem("session_token");
+  const token = "{{ session_token|default:'' }}";
+  const fullname = "{{ fullname|escapejs }}";
 
   if (token) {
-    fetch('/user-info', {
-      method: 'GET',
-      headers: {
-        'Session-Token': token
-      }
-    })
-    .then(res => {
-      if (!res.ok) throw new Error();
-      return res.json();
-    })
-   .then(data => {
-  navLinks.innerHTML += `
-    <li><a href="/my-applications/">My Applications</a></li>
-    <li class="profile-menu">
-      <span class="username" id="usernameToggle">${data.fullname}</span>
-      <ul class="dropdown" id="profileDropdown">
-        <li><a href="#">Profile</a></li>
-        <li><a href="#">Settings</a></li>
-        <li><a href="#">Dark Mode</a></li>
-        <li><a href="#" onclick="logout()">Logout</a></li>
-      </ul>
-    </li>
-  `;
-})
-
-    .catch(() => {
-      renderGuestLinks();
-    });
-  } else {
-    renderGuestLinks();
+    // ✅ Store in localStorage for use across other pages
+    localStorage.setItem("session_token", token);
+    localStorage.setItem("fullname", fullname);
   }
 
-  function renderGuestLinks() {
+  const navLinks = document.getElementById('navLinks');
+  const localToken = localStorage.getItem("session_token");
+  const localFullname = localStorage.getItem("fullname");
+
+  if (localToken) {
+    navLinks.innerHTML += `
+      <li><a href="/my-applications/">My Applications</a></li>
+      <li class="profile-menu">
+        <span class="username" id="usernameToggle">${localFullname}</span>
+        <ul class="dropdown" id="profileDropdown">
+          <li><a href="#">Profile</a></li>
+          <li><a href="#">Settings</a></li>
+          <li><a href="#">Dark Mode</a></li>
+          <li><a href="#" onclick="logout()">Logout</a></li>
+        </ul>
+      </li>
+    `;
+  } else {
     navLinks.innerHTML += `
       <li><a href="{% url 'login' %}">Login</a></li>
       <li><a href="{% url 'register' %}">Register</a></li>
@@ -53,11 +44,13 @@
 
   function logout() {
     localStorage.removeItem("session_token");
+    localStorage.removeItem("fullname");
     window.location.href = "{% url 'login' %}";
   }
 </script>
+
+
 <style>
-  /* Navbar Styles */
 .navbar {
   display: flex;
   justify-content: space-between;

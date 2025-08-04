@@ -12,7 +12,7 @@ from django.utils.decorators import method_decorator
 class ApplyJobView(View):
     def post(self, request, job_id):
        
-        session_token = request.headers.get('X-Session-Token')
+        session_token = request.headers.get('Session-Token')
         user = None
 
         if session_token:
@@ -51,7 +51,7 @@ class MyApplicationsView(View):
         return render(request, 'my_applications.html')
 
     def post(self, request):
-        session_token = request.headers.get('Session-Token') 
+        session_token = request.headers.get('Session-Token')
 
         if not session_token:
             return JsonResponse({'error': 'Missing session token'}, status=401)
