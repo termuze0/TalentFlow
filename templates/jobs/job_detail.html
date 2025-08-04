@@ -1,544 +1,159 @@
-{% load static %}
-{% include 'partials/navbar.html' %}
-<div class="job-detail-container">
-    <div class="back-button-container">
-        <a href="javascript:history.back()" class="back-button">
-            <i class="fas fa-arrow-left"></i> Back to Jobs
-        </a>
-    </div>
-    
-    <div class="job-detail-card">
-        <div class="job-detail-header">
-            <div class="header-top">
-                <h1 class="job-title">{{ job.title }}</h1>
-                <div class="apply-mobile">
-                    <button class="apply-button-mobile">Apply Now</button>
-                </div>
-            </div>
-            <p class="employer">Posted by: <span>{{ job.employer.fullname }}</span></p>
-            
-            <div class="job-meta">
-                <div class="meta-item">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span>{{ job.location }}</span>
-                </div>
-                <div class="meta-item">
-                    <i class="fas fa-briefcase"></i>
-                    <span>{{ job.job_type.name }}</span>
-                </div>
-                <div class="meta-item">
-                    <i class="fas fa-tag"></i>
-                    <span>{{ job.category.name }}</span>
-                </div>
-                {% if job.salary %}
-                <div class="meta-item highlight">
-                    <i class="fas fa-dollar-sign"></i>
-                    <span>${{ job.salary|floatformat:"0" }}</span>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-        
-        <div class="job-detail-content">
-            <div class="job-section">
-                <h2><i class="fas fa-align-left"></i> Job Description</h2>
-                <div class="job-description">
-                    {{ job.description|linebreaks }}
-                </div>
-            </div>
-            
-            <div class="job-section">
-                <h2><i class="fas fa-clipboard-check"></i> Requirements</h2>
-                <div class="job-requirements">
-                    {{ job.requirements|linebreaks }}
-                </div>
-            </div>
-            
-            {% if job.tags.all %}
-            <div class="job-section">
-                <h2><i class="fas fa-tags"></i> Tags</h2>
-                <div class="tags">
-                    {% for tag in job.tags.all %}
-                        <span class="tag">{{ tag.name }}</span>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-            
-            <div class="deadline-section">
-                <i class="fas fa-clock"></i>
-                <p>Application Deadline: <strong>{{ job.deadline|date:"F d, Y" }}</strong></p>
-            </div>
-        </div>
-        
-        <div class="application-section">
-            <h2><i class="fas fa-paper-plane"></i> Apply for this Position</h2>
-            <form method="post" enctype="multipart/form-data" action="{% url 'apply-job' job.id %}">
 
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="full_name">Full Name</label>
-                    <input type="text" id="full_name" name="full_name" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="resume">Resume (PDF only, max 5MB)</label>
-                    <div class="file-upload">
-                        <input type="file" id="resume" name="resume" accept=".pdf" required>
-                        <label for="resume" class="file-upload-label">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <span>Choose file</span>
-                        </label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="cover_letter">Cover Letter (Optional)</label>
-                    <textarea id="cover_letter" name="cover_letter" rows="5" placeholder="Tell us why you'd be a good fit..."></textarea>
-                </div>
-                <button type="submit" class="apply-button">
-                    <i class="fas fa-paper-plane"></i> Submit Application
-                </button>
-            </form>
-        </div>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{{ job.title }} - Job Details</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+      padding: 2rem;
+    }
+
+    .job-detail-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .job-detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .job-title {
+      font-size: 2rem;
+      color: #2c3e50;
+      margin-bottom: 0.5rem;
+    }
+
+    .job-meta {
+      font-size: 0.95rem;
+      color: #777;
+    }
+
+    .job-description,
+    .job-requirements {
+      margin-top: 1.5rem;
+    }
+
+    .job-description h3,
+    .job-requirements h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: #34495e;
+    }
+
+    .apply-button-mobile {
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.95rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .apply-button-mobile.unsave {
+      background-color: #d32f2f;
+    }
+
+    .apply-button-mobile:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+
+<div class="job-detail-container">
+  <div class="job-detail-header">
+    <div>
+      <h1 class="job-title">{{ job.title }}</h1>
+      <div class="job-meta">
+        <p>🏢 {{ job.employer.fullname }}</p>
+        <p>📍 {{ job.location }}</p>
+        {% if job.salary %}
+          <p>💰 ${{ job.salary|floatformat:"0" }}</p>
+        {% endif %}
+        <p>⏰ Deadline: {{ job.deadline|date:"M d, Y" }}</p>
+        <p>📂 Category: {{ job.category.name }}</p>
+      </div>
     </div>
+    <div>
+      <button id="save-job-btn"
+              class="apply-button-mobile"
+              data-job-id="{{ job.id }}">
+        Save Job
+      </button>
+    </div>
+  </div>
+
+  <div class="job-description">
+    <h3>Job Description</h3>
+    <p>{{ job.description|linebreaks }}</p>
+  </div>
+
+  <div class="job-requirements">
+    <h3>Requirements</h3>
+    <p>{{ job.requirements|linebreaks }}</p>
+  </div>
 </div>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<style>
-:root {
-    --primary-color: #2563eb;
-    --primary-hover: #1d4ed8;
-    --secondary-color: #3b82f6;
-    --text-color: #1f2937;
-    --light-text: #6b7280;
-    --border-color: #e5e7eb;
-    --background-light: #f8fafc;
-    --background-main: #f1f5f9;
-    --success-color: #10b981;
-    --warning-color: #f59e0b;
-    --danger-color: #ef4444;
-}
-
-body {
-    background-color: var(--background-main);
-}
-
-.job-detail-container {
-    max-width: 1000px;
-    margin: 2rem auto;
-    padding: 0 1.5rem;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    color: var(--text-color);
-}
-
-.back-button-container {
-    margin-bottom: 1.5rem;
-}
-
-.back-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 500;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    transition: all 0.2s;
-}
-
-.back-button:hover {
-    background-color: #e0e7ff;
-    color: var(--primary-hover);
-}
-
-.back-button i {
-    font-size: 0.9rem;
-}
-
-.job-detail-card {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    overflow: hidden;
-    margin-bottom: 2rem;
-}
-
-.job-detail-header {
-    padding: 2.5rem 2.5rem 1.5rem;
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-    border-bottom: 1px solid var(--border-color);
-}
-
-.header-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 0.5rem;
-}
-
-.job-title {
-    color: var(--text-color);
-    margin: 0;
-    font-size: 2rem;
-    font-weight: 700;
-    line-height: 1.2;
-}
-
-.employer {
-    color: var(--light-text);
-    font-size: 1rem;
-    margin: 0.5rem 0 1.5rem;
-}
-
-.employer span {
-    color: var(--text-color);
-    font-weight: 500;
-}
-
-.job-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    margin-top: 1.5rem;
-}
-
-.meta-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: white;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    border: 1px solid var(--border-color);
-}
-
-.meta-item i {
-    color: var(--light-text);
-    font-size: 0.9rem;
-}
-
-.meta-item.highlight {
-    background: #eff6ff;
-    border-color: #dbeafe;
-    color: var(--primary-color);
-}
-
-.meta-item.highlight i {
-    color: var(--primary-color);
-}
-
-.job-detail-content {
-    padding: 2rem 2.5rem;
-}
-
-.job-section {
-    margin-bottom: 2.5rem;
-}
-
-.job-section h2 {
-    color: var(--text-color);
-    font-size: 1.4rem;
-    font-weight: 600;
-    margin-bottom: 1.25rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.job-section h2 i {
-    color: var(--primary-color);
-    font-size: 1.2rem;
-}
-
-.job-description, .job-requirements {
-    line-height: 1.7;
-    color: var(--text-color);
-    padding-left: 1.9rem;
-}
-
-.job-description p, .job-requirements p {
-    margin-bottom: 1rem;
-}
-
-.tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    padding-left: 1.9rem;
-}
-
-.tag {
-    background: #f3f4f6;
-    color: var(--text-color);
-    padding: 0.4rem 0.9rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 500;
-}
-
-.deadline-section {
-    background: #fff7ed;
-    padding: 1rem 1.5rem;
-    border-radius: 8px;
-    margin: 2.5rem 0;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    font-size: 1rem;
-}
-
-.deadline-section i {
-    color: var(--warning-color);
-    font-size: 1.2rem;
-}
-
-.deadline-section p {
-    margin: 0;
-}
-
-.deadline-section strong {
-    color: var(--warning-color);
-}
-
-.application-section {
-    background: var(--background-light);
-    padding: 2rem 2.5rem;
-    border-top: 1px solid var(--border-color);
-}
-
-.application-section h2 {
-    margin-top: 0;
-    color: var(--text-color);
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 1.75rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.application-section h2 i {
-    color: var(--primary-color);
-}
-
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: var(--text-color);
-    font-size: 0.95rem;
-}
-
-.form-group input[type="text"],
-.form-group input[type="email"],
-.form-group textarea {
-    width: 100%;
-    padding: 0.85rem 1.25rem;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 1rem;
-    font-family: inherit;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    background: white;
-}
-
-.form-group input[type="text"]:focus,
-.form-group input[type="email"]:focus,
-.form-group textarea:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-.form-group textarea {
-    min-height: 140px;
-    resize: vertical;
-}
-
-.file-upload {
-    position: relative;
-}
-
-.file-upload input[type="file"] {
-    position: absolute;
-    left: 0;
-    top: 0;
-    opacity: 0;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-}
-
-.file-upload-label {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    background: white;
-    border: 1px dashed var(--border-color);
-    border-radius: 8px;
-    padding: 1.5rem;
-    text-align: center;
-    justify-content: center;
-    transition: all 0.2s;
-}
-
-.file-upload-label:hover {
-    border-color: var(--primary-color);
-    background: #f8fafc;
-}
-
-.file-upload-label i {
-    font-size: 1.5rem;
-    color: var(--primary-color);
-}
-
-.file-upload-label span {
-    color: var(--light-text);
-    font-weight: 500;
-}
-
-.apply-button {
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 1rem 2rem;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s ease;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-}
-
-.apply-button:hover {
-    background: var(--primary-hover);
-}
-
-.apply-button-mobile {
-    display: none;
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s ease;
-}
-
-.apply-button-mobile:hover {
-    background: var(--primary-hover);
-}
-
-@media (max-width: 768px) {
-    .job-detail-container {
-        padding: 0 1rem;
-    }
-    
-    .job-detail-header {
-        padding: 1.5rem 1.5rem 1rem;
-    }
-    
-    .job-title {
-        font-size: 1.6rem;
-    }
-    
-    .job-detail-content {
-        padding: 1.5rem;
-    }
-    
-    .application-section {
-        padding: 1.5rem;
-    }
-    
-    .header-top {
-        flex-direction: column;
-        gap: 1rem;
-    }
-    
-    .apply-button-mobile {
-        display: block;
-    }
-    
-    .job-meta {
-        gap: 0.5rem;
-    }
-    
-    .meta-item {
-        font-size: 0.8rem;
-        padding: 0.4rem 0.8rem;
-    }
-    
-    .job-description, .job-requirements {
-        padding-left: 0;
-    }
-    
-    .tags {
-        padding-left: 0;
-    }
-}
-
-@media (max-width: 480px) {
-    .job-meta {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .back-button {
-        padding: 0.5rem;
-    }
-}
-</style>
-
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const applyForm = document.querySelector('.application-section form');
-    const applyButton = document.querySelector('.apply-button');
-    
-    if (applyForm) {
-        applyForm.addEventListener('submit', async function(e) {
-            e.preventDefault(); 
+document.addEventListener('DOMContentLoaded', async function () {
+  const saveBtn = document.getElementById('save-job-btn');
+  const jobId = saveBtn?.dataset.jobId;
+  const token = localStorage.getItem('session_token');
 
-            const formData = new FormData(applyForm);
-            const sessionToken = localStorage.getItem('session_token');  
-            try {
-                const response = await fetch(applyForm.action, {
-                    method: 'POST',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-Session-Token': sessionToken || ''
-                    },
-                    body: formData
-                });
+  if (!saveBtn || !token) return;
 
-                const data = await response.json();
+  
+  try {
+    const res = await fetch(`/jobs/saved-jobs/${jobId}/status/`, {
+      method: 'GET',
+      headers: {
+        'Session-Token': token
+      }
+    });
 
-                if (response.ok) {
-                    alert("Application submitted successfully.");
-                    window.location.reload();
-                } else {
-                    alert(data.error || "An error occurred.");
-                }
-            } catch (error) {
-                console.error("Error submitting form:", error);
-                alert("Something went wrong.");
-            }
-        });
+    const data = await res.json();
+    updateButton(data.saved);
+  } catch (err) {
+    console.error("Could not check saved status");
+  }
+  saveBtn.addEventListener('click', async () => {
+    try {
+      const res = await fetch(`/jobs/${jobId}/save/`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Session-Token': token
+  },
+});
+      const data = await res.json();
+      if (res.ok) {
+        updateButton(data.saved);
+      } else {
+        alert(data.error || "Something went wrong.");
+      }
+    } catch (err) {
+      console.error("Error saving job", err);
     }
+  });
+
+  function updateButton(isSaved) {
+    saveBtn.textContent = isSaved ? 'Unsave Job' : 'Save Job';
+    saveBtn.classList.toggle('unsave', isSaved);
+  }
 });
 </script>
+
+</body>
+</html>
