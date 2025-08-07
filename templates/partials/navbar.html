@@ -1,5 +1,9 @@
+{% load static %}
 <nav class="navbar">
   <a href="{% url 'home' %}" class="brand">TalentFlow</a>
+  <button class="menu-toggle" id="menuToggle">
+    <i class="fas fa-bars"></i>
+  </button>
   <ul class="nav-links" id="navLinks">
     <li><a href="{% url 'home' %}">Home</a></li>
     <li><a href="{% url 'saved-jobs' %}">Jobs</a></li>
@@ -7,173 +11,86 @@
   </ul>
 </nav>
 
+<link rel="stylesheet" href="{% static 'partials/navbar.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 <script>
-  const token = "{{ session_token|default:'' }}";
-  const fullname = "{{ fullname|escapejs }}";
-
-  if (token) {
-    // ✅ Store in localStorage for use across other pages
-    localStorage.setItem("session_token", token);
-    localStorage.setItem("fullname", fullname);
-  }
-
-  const navLinks = document.getElementById('navLinks');
-  const localToken = localStorage.getItem("session_token");
-  const localFullname = localStorage.getItem("fullname");
-
-  if (localToken) {
-    navLinks.innerHTML += `
-      <li><a href="/my-applications/">My Applications</a></li>
-      <li class="profile-menu">
-        <span class="username" id="usernameToggle">${localFullname}</span>
-        <ul class="dropdown" id="profileDropdown">
-          <li><a href="#">Profile</a></li>
-          <li><a href="#">Settings</a></li>
-          <li><a href="#">Dark Mode</a></li>
-          <li><a href="#" onclick="logout()">Logout</a></li>
-        </ul>
-      </li>
-    `;
-  } else {
-    navLinks.innerHTML += `
-      <li><a href="{% url 'login' %}">Login</a></li>
-      <li><a href="{% url 'register' %}">Register</a></li>
-    `;
-  }
-
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    const token = "{{ session_token|default:'' }}";
+    const fullname = "{{ fullname|escapejs }}";
+    const navLinks = document.getElementById('navLinks');
+    const menuToggle = document.getElementById('menuToggle');
+    
+    menuToggle.addEventListener('click', function() {
+      navLinks.classList.toggle('active');
+    });
+    
+    if (token) {
+      localStorage.setItem("session_token", token);
+      localStorage.setItem("fullname", fullname);
+    }
+    
+    const localToken = localStorage.getItem("session_token");
+    const localFullname = localStorage.getItem("fullname");
+    
+    if (localToken) {
+      navLinks.innerHTML += `
+        <li><a href="/my-applications/">My Applications</a></li>
+        <li class="profile-menu">
+          <span class="username" id="usernameToggle">${localFullname}</span>
+          <ul class="dropdown" id="profileDropdown">
+            <li><a href="/profile/">Profile</a></li>
+            <li><a href="/settings/">Settings</a></li>
+            <li>
+              <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i> Dark Mode
+              </button>
+            </li>
+            <li><a href="#" onclick="logout()">Logout</a></li>
+          </ul>
+        </li>
+      `;
+    } else {
+      navLinks.innerHTML += `
+        <li><a href="{% url 'login' %}">Login</a></li>
+        <li><a href="{% url 'register' %}">Register</a></li>
+      `;
+    }
+    
+    initDarkMode();
+  });
+  
   function logout() {
     localStorage.removeItem("session_token");
     localStorage.removeItem("fullname");
     window.location.href = "{% url 'login' %}";
   }
-</script>
-
-
-<style>
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background-color: #ffffff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  position: relative;
-  z-index: 1000;
-}
-
-.brand {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #3a86ff;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.brand:hover {
-  color: #2667cc;
-}
-
-.nav-links {
-  display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  gap: 1.5rem;
-}
-
-.nav-links li a {
-  text-decoration: none;
-  color: #333;
-  font-weight: 500;
-  transition: color 0.3s ease;
-  padding: 0.5rem 0;
-  position: relative;
-}
-
-.nav-links li a:hover {
-  color: #3a86ff;
-}
-
-.nav-links li a::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background-color: #3a86ff;
-  transition: width 0.3s ease;
-}
-
-.nav-links li a:hover::after {
-  width: 100%;
-}
-
-/* Profile Menu Styles */
-.profile-menu {
-  position: relative;
-  cursor: pointer;
-}
-
-.username {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #333;
-  font-weight: 500;
-}
-
-.username::after {
-  content: '▼';
-  font-size: 0.6rem;
-  margin-left: 0.3rem;
-}
-
-.dropdown {
-  position: absolute;
-  right: 0;
-  top: 100%;
-  background-color: white;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  list-style: none;
-  padding: 0.5rem 0;
-  margin-top: 0.5rem;
-  min-width: 180px;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-10px);
-  transition: all 0.3s ease;
-}
-
-.profile-menu:hover .dropdown {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-.dropdown li a {
-  display: block;
-  padding: 0.5rem 1.5rem;
-  color: #555;
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-
-.dropdown li a:hover {
-  background-color: #f5f8ff;
-  color: #3a86ff;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .navbar {
-    padding: 1rem;
-  }
   
-  .nav-links {
-    gap: 1rem;
+  function initDarkMode() {
+    const themeToggle = document.getElementById('themeToggle');
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    const currentTheme = localStorage.getItem('theme');
+    if (currentTheme === 'dark' || (!currentTheme && prefersDarkScheme.matches)) {
+      document.body.classList.add('dark-mode');
+      if (themeToggle) {
+        themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+      }
+    }
+    
+    if (themeToggle) {
+      themeToggle.addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+        localStorage.setItem('theme', theme);
+        
+        if (theme === 'dark') {
+          themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+        } else {
+          themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+        }
+      });
+    }
   }
-}
-</style>
+</script>
