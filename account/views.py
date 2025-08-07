@@ -1,4 +1,5 @@
 from rest_framework.views import APIView
+from django.views import View
 from rest_framework.response import Response
 from rest_framework import status
 from django.utils import timezone
@@ -14,7 +15,8 @@ from .utils import get_client_ip
 from django.conf import settings
 import requests
 import secrets
-
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import  method_decorator
 from jobs.models import Job, Category
 import uuid
 
@@ -69,13 +71,13 @@ class LoginView(APIView):
                         is_active=True
                     )
 
-                    # Store session data
+                    
                     request.session['session_token'] = session_token
                     request.session['email'] = user.email
                     request.session['fullname'] = user.fullname
                     request.session['user_type'] = user.user_type
 
-                    return redirect('/home/')  # redirect with session data
+                    return redirect('/home/')  
                 else:
                     return render(request, 'login.html', {'error': 'Invalid credentials'})
 
@@ -125,7 +127,6 @@ class SocialLoginView(APIView):
 
         if provider == "google":
             if not code:
-                # Step 1: Redirect to Google Auth
                 auth_url = (
                     "https://accounts.google.com/o/oauth2/v2/auth"
                     "?response_type=code"
@@ -135,7 +136,7 @@ class SocialLoginView(APIView):
                 )
                 return redirect(auth_url)
             else:
-                # Step 2: Handle Google callback
+                
                 token_resp = requests.post(
                     "https://oauth2.googleapis.com/token",
                     data={
@@ -157,10 +158,10 @@ class SocialLoginView(APIView):
 
         elif provider == "twitter":
             if not code:
-                # Step 1: Redirect to Twitter Auth
+                
                 code_verifier = secrets.token_urlsafe(64)
                 request.session["code_verifier"] = code_verifier
-                code_challenge = code_verifier  # Use 'plain' method for dev; SHA256 for prod
+                code_challenge = code_verifier  
 
                 auth_url = (
                     "https://twitter.com/i/oauth2/authorize"
@@ -168,13 +169,13 @@ class SocialLoginView(APIView):
                     f"&client_id={settings.TWITTER_CLIENT_ID}"
                     f"&redirect_uri={settings.TWITTER_CALLBACK_URI}"
                     "&scope=tweet.read users.read offline.access"
-                    "&state=xyz123"  # Ideally, generate a random state
+                    "&state=xyz123"  
                     f"&code_challenge={code_challenge}"
                     "&code_challenge_method=plain"
                 )
                 return redirect(auth_url)
             else:
-                # Step 2: Handle Twitter callback
+                
                 code_verifier = request.session.get("code_verifier")
                 if not code_verifier:
                     return Response({"error": "Missing code_verifier"}, status=400)
@@ -220,7 +221,7 @@ class SocialLoginView(APIView):
             email=email,
             defaults={
                 "fullname": name,
-                "user_type": "JOB_SEEKER",  # default
+                "user_type": "JOB_SEEKER",  
                 "phone": "",
                 "is_active": True
             }
@@ -243,17 +244,107 @@ class SocialLoginView(APIView):
             expires_at=timezone.now() + timedelta(days=7),
             is_active=True
         )
-
-        # ✅ Save session like custom login
         request.session['session_token'] = session_token
         request.session['email'] = user.email
         request.session['fullname'] = user.fullname
         request.session['user_type'] = user.user_type
 
-        # ✅ Redirect like LoginView
+      
         return redirect('/home/')
 
+@method_decorator(csrf_exempt, name='dispatch')
+class UserProfile(View):
+    def get_user_from_token(self, request):
+        session_token = request.headers.get('Session-Token')
+        if not session_token:
+            return None, JsonResponse({'error': 'Missing session token'}, status=401)
 
+        try:
+            session = UserSession.objects.get(session_token=session_token, is_active=True)
+            if session.expires_at < timezone.now():
+                return None, JsonResponse({'error': 'Session expired'}, status=401)
+            return session.user, None
+        except UserSession.DoesNotExist:
+            return None, JsonResponse({'error': 'Invalid session token'}, status=401)
+    def get(self,request):
+        return render(request , 'account/user_profile.html')
+    def post(self, request):
+        user, error = self.get_user_from_token(request)
+        if error:
+            return error
+
+        profile_data = {
+            'email': user.email,
+            'fullname': user.fullname,
+            'user_type': user.user_type,
+            'phone': user.phone,
+            'joined': user.joined.strftime('%Y-%m-%d'),
+        }
+
+        if user.is_job_seeker():
+            try:
+                profile = user.jobseeker_profile
+                profile_data.update({
+                    'bio': profile.bio,
+                    'skills': profile.skills,
+                    'education': profile.education,
+                    'experience': profile.experience,
+                    'portfolio_url': profile.portfolio_url,
+                    'linkedin_url': profile.linkedin_url,
+                    'profile_picture': profile.profile_picture.url if profile.profile_picture else None,
+                    'resume': profile.resume.url if profile.resume else None,
+                })
+            except JobSeekerProfile.DoesNotExist:
+                profile_data['profile_error'] = 'Job seeker profile not found.'
+
+        elif user.is_employer():
+            try:
+                profile = user.employer_profile
+                profile_data.update({
+                    'company_website': profile.company_website,
+                    'company_description': profile.company_description,
+                    'company_logo': profile.company_logo.url if profile.company_logo else None,
+                    'address': profile.address,
+                    'industry': profile.industry,
+                    'founded_year': profile.founded_year,
+                    'social_media': profile.social_media or {},
+                })
+            except EmployerProfile.DoesNotExist:
+                profile_data['profile_error'] = 'Employer profile not found.'
+
+        return JsonResponse({'user_profile': profile_data})
+
+    def put(self, request):
+        user, error = self.get_user_from_token(request)
+        if error:
+            return error
+
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+        
+        for field in ['fullname', 'phone']:
+            if field in data:
+                setattr(user, field, data[field])
+        user.save()
+
+        if user.is_job_seeker():
+            profile, _ = JobSeekerProfile.objects.get_or_create(user=user)
+            for field in ['bio', 'skills', 'education', 'experience', 'portfolio_url', 'linkedin_url']:
+                if field in data:
+                    setattr(profile, field, data[field])
+            profile.save()
+
+        elif user.is_employer():
+            profile, _ = EmployerProfile.objects.get_or_create(user=user)
+            for field in ['company_website', 'company_description', 'address', 'industry', 'founded_year', 'social_media']:
+                if field in data:
+                    setattr(profile, field, data[field])
+            profile.save()
+
+        return JsonResponse({'message': 'Profile updated successfully'})
 
 @api_view(['GET'])
 def UserhomePage(request):

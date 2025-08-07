@@ -10,7 +10,7 @@ class CustomSessionAuthentication(BaseAuthentication):
         if not token:
             raise AuthenticationFailed('No session token provided.')
 
-        # Optional: Support "Token <token>" format
+        
         if token.startswith("Token "):
             token = token.split(" ")[1]
 

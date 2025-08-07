@@ -9,6 +9,9 @@ from account.models import UserSession
 from django.http import JsonResponse
 from jobs.models import SavedJob
 from django.utils import timezone
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from django.views import View
 def job_list_view(request):
     jobs = Job.objects.filter(is_active=True)
     categories = Category.objects.all()
@@ -27,7 +30,6 @@ def job_list_view(request):
     if category:
         jobs = jobs.filter(category__name__iexact=category)
 
-    # Order by latest
     jobs = jobs.order_by("-posted_at")
 
     
@@ -44,9 +46,10 @@ def job_detail_view(request, pk):
     job = get_object_or_404(Job, pk=pk)
     return render(request, "jobs/job_detail.html", {"job": job})
 
-class SavedJobView(APIView):
+@method_decorator(csrf_exempt, name='dispatch')
+class SavedJobView(View):
     def get(self, request):
-        return render(request, 'jobs/job_saved.html')  # render HTML
+        return render(request, 'jobs/job_saved.html')   
 
     def post(self, request):
         session_token = request.headers.get('Session-Token')

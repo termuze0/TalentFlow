@@ -1,6 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
 from .models import CustomUser, EmployerProfile, JobSeekerProfile, UserCredential, SocialAccount, UserSession
 
 admin.site.register(CustomUser)

@@ -1,0 +1,659 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile | CareerConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3f37c9;
+      --accent-color: #4cc9f0;
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+      --success-color: #4bb543;
+      --warning-color: #f0ad4e;
+      --danger-color: #d9534f;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      line-height: 1.6;
+      color: var(--dark-color);
+      background-color: var(--light-color);
+      padding: 0;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+      text-align: center;
+      padding-top: 20px;
+    }
+    
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+    
+    .profile-card {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 30px;
+      margin-top: 30px;
+      border-left: 4px solid var(--primary-color);
+      transition: var(--transition);
+    }
+    
+    .profile-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    
+    .profile-picture-container {
+      position: relative;
+    }
+    
+    .profile-picture {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--primary-color);
+    }
+    
+    .profile-picture-edit {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      background: var(--primary-color);
+      color: white;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    
+    .profile-info {
+      flex: 1;
+    }
+    
+    .profile-name {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: var(--dark-color);
+    }
+    
+    .profile-email {
+      color: #666;
+      margin-bottom: 10px;
+    }
+    
+    .profile-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 10px;
+    }
+    
+    .profile-meta span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.9rem;
+    }
+    
+    .profile-section {
+      margin-bottom: 25px;
+    }
+    
+    .profile-section h3 {
+      font-size: 1.3rem;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+      padding-bottom: 5px;
+      border-bottom: 2px solid #eee;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .profile-section-content {
+      line-height: 1.8;
+    }
+    
+    .profile-section-content p {
+      margin-bottom: 15px;
+    }
+    
+    .skills-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    
+    .skill-tag {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+    
+    .action-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      margin-top: 30px;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border-radius: var(--border-radius);
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      transition: var(--transition);
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--secondary-color);
+    }
+    
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+    
+    .btn-outline:hover {
+      background-color: rgba(67, 97, 238, 0.1);
+    }
+    
+    .btn-danger {
+      background-color: #ffebee;
+      color: var(--danger-color);
+    }
+    
+    .btn-danger:hover {
+      background-color: #ffcdd2;
+    }
+    
+    /* Edit form styles */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      font-family: 'Poppins', sans-serif;
+      transition: var(--transition);
+    }
+    
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+    }
+    
+    textarea.form-control {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    /* Profile picture upload modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .modal-content {
+      background-color: white;
+      padding: 30px;
+      border-radius: var(--border-radius);
+      width: 90%;
+      max-width: 500px;
+      box-shadow: var(--box-shadow);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .modal-title {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+    }
+    
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #666;
+    }
+    
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .file-upload-preview {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto;
+      display: block;
+      border: 2px solid #eee;
+    }
+    
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .profile-header {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .profile-meta {
+        justify-content: center;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  {% include 'partials/navbar.html' %}
+  
+  <div class="container">
+    <h1>My Profile</h1>
+    <p class="subtitle">Manage your job seeker profile and information</p>
+    
+    <div class="profile-card">
+      <div class="profile-header">
+        <div class="profile-picture-container">
+          {% if jobseeker_profile.profile_picture %}
+            <img src="{{ jobseeker_profile.profile_picture.url }}" alt="Profile Picture" class="profile-picture" id="profile-picture">
+          {% else %}
+            <img src="{% static 'images/default-profile.png' %}" alt="Profile Picture" class="profile-picture" id="profile-picture">
+          {% endif %}
+          <div class="profile-picture-edit" onclick="openProfilePictureModal()">
+            <i class="fas fa-camera"></i>
+          </div>
+        </div>
+        <div class="profile-info">
+          <h2 class="profile-name">{{ user.fullname }}</h2>
+          <p class="profile-email">{{ user.email }}</p>
+          <div class="profile-meta">
+            <span><i class="fas fa-phone"></i> {{ user.phone }}</span>
+            {% if jobseeker_profile.linkedin_url %}
+              <span><i class="fab fa-linkedin"></i> <a href="{{ jobseeker_profile.linkedin_url }}" target="_blank">LinkedIn</a></span>
+            {% endif %}
+            {% if jobseeker_profile.portfolio_url %}
+              <span><i class="fas fa-globe"></i> <a href="{{ jobseeker_profile.portfolio_url }}" target="_blank">Portfolio</a></span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      
+      <div class="profile-section">
+        <h3>
+          <span><i class="fas fa-user"></i> About Me</span>
+          <button class="btn btn-outline btn-sm" onclick="toggleEdit('bio')">
+            <i class="fas fa-edit"></i> Edit
+          </button>
+        </h3>
+        <div class="profile-section-content" id="bio-display">
+          {% if jobseeker_profile.bio %}
+            <p>{{ jobseeker_profile.bio|linebreaks }}</p>
+          {% else %}
+            <p>No bio added yet.</p>
+          {% endif %}
+        </div>
+        <div class="form-group" id="bio-edit" style="display: none;">
+          <textarea class="form-control" id="bio-input" rows="5">{{ jobseeker_profile.bio }}</textarea>
+          <div class="action-buttons" style="margin-top: 10px;">
+            <button class="btn btn-primary" onclick="saveSection('bio')">Save</button>
+            <button class="btn btn-danger" onclick="toggleEdit('bio')">Cancel</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="profile-section">
+        <h3>
+          <span><i class="fas fa-graduation-cap"></i> Education</span>
+          <button class="btn btn-outline btn-sm" onclick="toggleEdit('education')">
+            <i class="fas fa-edit"></i> Edit
+          </button>
+        </h3>
+        <div class="profile-section-content" id="education-display">
+          {% if jobseeker_profile.education %}
+            <p>{{ jobseeker_profile.education|linebreaks }}</p>
+          {% else %}
+            <p>No education information added yet.</p>
+          {% endif %}
+        </div>
+        <div class="form-group" id="education-edit" style="display: none;">
+          <textarea class="form-control" id="education-input" rows="5">{{ jobseeker_profile.education }}</textarea>
+          <div class="action-buttons" style="margin-top: 10px;">
+            <button class="btn btn-primary" onclick="saveSection('education')">Save</button>
+            <button class="btn btn-danger" onclick="toggleEdit('education')">Cancel</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="profile-section">
+        <h3>
+          <span><i class="fas fa-briefcase"></i> Experience</span>
+          <button class="btn btn-outline btn-sm" onclick="toggleEdit('experience')">
+            <i class="fas fa-edit"></i> Edit
+          </button>
+        </h3>
+        <div class="profile-section-content" id="experience-display">
+          {% if jobseeker_profile.experience %}
+            <p>{{ jobseeker_profile.experience|linebreaks }}</p>
+          {% else %}
+            <p>No experience information added yet.</p>
+          {% endif %}
+        </div>
+        <div class="form-group" id="experience-edit" style="display: none;">
+          <textarea class="form-control" id="experience-input" rows="5">{{ jobseeker_profile.experience }}</textarea>
+          <div class="action-buttons" style="margin-top: 10px;">
+            <button class="btn btn-primary" onclick="saveSection('experience')">Save</button>
+            <button class="btn btn-danger" onclick="toggleEdit('experience')">Cancel</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="profile-section">
+        <h3>
+          <span><i class="fas fa-code"></i> Skills</span>
+          <button class="btn btn-outline btn-sm" onclick="toggleEdit('skills')">
+            <i class="fas fa-edit"></i> Edit
+          </button>
+        </h3>
+        <div class="profile-section-content" id="skills-display">
+          {% if jobseeker_profile.skills %}
+            <div class="skills-list">
+              {% for skill in jobseeker_profile.skills.splitlines %}
+                <span class="skill-tag">{{ skill }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p>No skills added yet.</p>
+          {% endif %}
+        </div>
+        <div class="form-group" id="skills-edit" style="display: none;">
+          <textarea class="form-control" id="skills-input" rows="3" placeholder="Enter each skill on a new line">{{ jobseeker_profile.skills }}</textarea>
+          <div class="action-buttons" style="margin-top: 10px;">
+            <button class="btn btn-primary" onclick="saveSection('skills')">Save</button>
+            <button class="btn btn-danger" onclick="toggleEdit('skills')">Cancel</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="profile-section">
+        <h3>
+          <span><i class="fas fa-file-alt"></i> Resume</span>
+          <button class="btn btn-outline btn-sm" onclick="toggleEdit('resume')">
+            <i class="fas fa-edit"></i> Edit
+          </button>
+        </h3>
+        <div class="profile-section-content" id="resume-display">
+          {% if jobseeker_profile.resume %}
+            <p><a href="{{ jobseeker_profile.resume.url }}" target="_blank"><i class="fas fa-download"></i> Download Current Resume</a></p>
+            <p>Uploaded on {{ jobseeker_profile.resume.uploaded_at|date:"M d, Y" }}</p>
+          {% else %}
+            <p>No resume uploaded yet.</p>
+          {% endif %}
+        </div>
+        <div class="form-group" id="resume-edit" style="display: none;">
+          <input type="file" class="form-control" id="resume-input" accept=".pdf,.doc,.docx">
+          <div class="action-buttons" style="margin-top: 10px;">
+            <button class="btn btn-primary" onclick="saveSection('resume')">Upload</button>
+            <button class="btn btn-danger" onclick="toggleEdit('resume')">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Picture Upload Modal -->
+  <div class="modal" id="profile-picture-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Update Profile Picture</h3>
+        <button class="close-modal" onclick="closeProfilePictureModal()">&times;</button>
+      </div>
+      <div class="form-group">
+        <img id="profile-picture-preview" class="file-upload-preview" src="{% if jobseeker_profile.profile_picture %}{{ jobseeker_profile.profile_picture.url }}{% else %}{% static 'images/default-profile.png' %}{% endif %}">
+      </div>
+      <div class="form-group">
+        <input type="file" id="profile-picture-input" accept="image/*" class="form-control">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" onclick="closeProfilePictureModal()">Cancel</button>
+        <button class="btn btn-primary" id="upload-profile-picture" onclick="uploadProfilePicture()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Edit profile functionality
+    function toggleEdit(section) {
+      const display = document.getElementById(`${section}-display`);
+      const edit = document.getElementById(`${section}-edit`);
+      
+      if (display.style.display === 'none') {
+        display.style.display = 'block';
+        edit.style.display = 'none';
+      } else {
+        display.style.display = 'none';
+        edit.style.display = 'block';
+      }
+    }
+    
+    // Profile picture modal
+    function openProfilePictureModal() {
+      document.getElementById('profile-picture-modal').style.display = 'flex';
+    }
+    
+    function closeProfilePictureModal() {
+      document.getElementById('profile-picture-modal').style.display = 'none';
+      document.getElementById('profile-picture-input').value = '';
+    }
+    
+    // Handle profile picture selection
+    document.getElementById('profile-picture-input').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          document.getElementById('profile-picture-preview').src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+    
+    // Upload profile picture
+    function uploadProfilePicture() {
+      const fileInput = document.getElementById('profile-picture-input');
+      const file = fileInput.files[0];
+      
+      if (!file) {
+        alert('Please select an image file');
+        return;
+      }
+      
+      const token = localStorage.getItem('session_token');
+      if (!token) {
+        alert('You need to be logged in to update your profile picture');
+        return;
+      }
+      
+      const formData = new FormData();
+      formData.append('profile_picture', file);
+      
+      fetch('/profile/update-picture/', {
+        method: 'POST',
+        headers: {
+          'Session-Token': token
+        },
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Update the profile picture preview
+          document.getElementById('profile-picture').src = data.profile_picture_url;
+          closeProfilePictureModal();
+          showToast('Profile picture updated successfully!');
+        } else {
+          alert(data.message || 'Failed to update profile picture');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while updating your profile picture');
+      });
+    }
+    
+    // Save profile sections
+    async function saveSection(section) {
+      const token = localStorage.getItem('session_token');
+      if (!token) {
+        alert('You need to be logged in to save changes.');
+        return;
+      }
+      
+      const formData = new FormData();
+      
+      if (section === 'resume') {
+        const resumeInput = document.getElementById('resume-input');
+        if (resumeInput.files[0]) {
+          formData.append('resume', resumeInput.files[0]);
+        } else {
+          alert('Please select a resume file to upload');
+          return;
+        }
+      } else {
+        formData.append(section, document.getElementById(`${section}-input`).value);
+      }
+      
+      try {
+        const response = await fetch('/profile/update/', {
+          method: 'POST',
+          headers: {
+            'Session-Token': token
+          },
+          body: formData
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          showToast('Profile updated successfully!');
+          location.reload(); // Refresh to show updated data
+        } else {
+          const error = await response.json();
+          alert(error.message || 'Failed to save changes');
+        }
+      } catch (error) {
+        console.error('Error saving profile:', error);
+        alert('An error occurred while saving your changes');
+      }
+    }
+    
+    // Show toast notification
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.style.position = 'fixed';
+      toast.style.bottom = '20px';
+      toast.style.left = '50%';
+      toast.style.transform = 'translateX(-50%)';
+      toast.style.backgroundColor = 'var(--primary-color)';
+      toast.style.color = 'white';
+      toast.style.padding = '12px 24px';
+      toast.style.borderRadius = 'var(--border-radius)';
+      toast.style.boxShadow = 'var(--box-shadow)';
+      toast.style.zIndex = '1000';
+      toast.style.transition = 'all 0.3s ease';
+      toast.textContent = message;
+      
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

@@ -260,9 +260,12 @@
           'Content-Type': 'application/json'
         }
       });
-
-      if (!res.ok) throw new Error('Unable to fetch saved jobs. Please try again later.');
-
+      console.log(token)
+      if (!res.ok) {
+      const errorData = await res.text(); // use text() to catch HTML/CSRF error pages
+      console.error("Error response:", errorData);
+      throw new Error('Unable to fetch saved jobs. Please try again later.');
+    }
       const data = await res.json();
       jobList.innerHTML = '';
 
