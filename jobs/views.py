@@ -76,7 +76,8 @@ class SavedJobView(View):
             for sj in saved_jobs
         ]
         return JsonResponse({'saved_jobs': jobs_data})
-class SaveJobView(APIView):
+@method_decorator(csrf_exempt, name='dispatch')
+class SaveJobView(View):
     def post(self, request, job_id):
         session_token = request.headers.get('Session-Token')
         if not session_token:
