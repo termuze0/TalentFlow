@@ -8,8 +8,10 @@ dj-database-url==3.0.1
 Django==5.2.1
 django-allauth==65.10.0
 djangorestframework==3.16.0
+gunicorn==23.0.0
 idna==3.10
 oauthlib==3.3.1
+packaging==25.0
 pillow==11.3.0
 psycopg2-binary==2.9.10
 pycparser==2.22
@@ -22,4 +24,3 @@ social-auth-core==4.7.0
 sqlparse==0.5.3
 tzdata==2025.2
 urllib3==2.5.0
-gunicorn
