@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <span class="username" id="usernameToggle">${localFullname}</span>
                 <ul class="dropdown" id="profileDropdown">
                     <li><a href="{% url 'user_profile'%}">Profile</a></li>
+                    <li><a href="{% url 'my_resume'%}">resume</a></li>
                     <li><a href="/settings/">Settings</a></li>
                     <li>
                         <button class="theme-toggle" id="themeToggle">

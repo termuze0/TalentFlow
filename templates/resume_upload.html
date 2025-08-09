@@ -1,0 +1,301 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Resume | CareerConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'resume_upload.css' %}">
+</head>
+<body>
+  {% include 'partials/navbar.html' %}
+  <div class="container">
+    <div class="upload-card">
+      <div class="upload-header">
+        <h1 class="upload-title">Upload Your Resume</h1>
+        <p class="upload-subtitle">PDF or DOC format (max 5MB)</p>
+      </div>
+
+      <form id="resumeUploadForm" class="upload-form">
+        <div class="file-upload-wrapper">
+          <label for="resumeFile" class="file-upload-label" id="fileUploadLabel">
+            <i class="fas fa-cloud-upload-alt file-upload-icon"></i>
+            <span class="file-upload-text">Drag & drop your resume here or click to browse</span>
+            <span class="file-upload-hint">Supports: PDF, DOC, DOCX</span>
+            <input type="file" id="resumeFile" class="file-upload-input" accept=".pdf,.doc,.docx" required>
+          </label>
+          <div id="fileInfo" style="display: none;">
+            <div class="file-info">
+              <i class="fas fa-file-alt file-info-icon"></i>
+              <span class="file-info-name" id="fileName"></span>
+              <button type="button" class="file-info-remove" id="removeFile">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="upload-actions">
+          <button type="submit" class="submit-btn" id="submitBtn">
+            <i class="fas fa-upload"></i> Upload Resume
+          </button>
+          <button type="button" class="reupload-btn" id="reuploadBtn">
+            <i class="fas fa-sync-alt"></i> Upload Different File
+          </button>
+        </div>
+
+        <div class="response-message" id="responseMessage"></div>
+        
+        <!-- AI Analysis Results Container -->
+        <div class="ai-analysis" id="aiAnalysis" style="display: none;">
+          <h3><i class="fas fa-robot"></i> Resume Analysis</h3>
+          <div id="aiAnalysisContent"></div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <button class="theme-toggle" id="themeToggle">
+    <i class="fas fa-moon" id="themeIcon"></i>
+  </button>
+  <script>
+    // DOM Elements
+    const fileUploadLabel = document.getElementById('fileUploadLabel');
+    const fileInput = document.getElementById('resumeFile');
+    const fileInfo = document.getElementById('fileInfo');
+    const fileName = document.getElementById('fileName');
+    const removeFileBtn = document.getElementById('removeFile');
+    const submitBtn = document.getElementById('submitBtn');
+    const reuploadBtn = document.getElementById('reuploadBtn');
+    const responseMessage = document.getElementById('responseMessage');
+    const form = document.getElementById('resumeUploadForm');
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const html = document.documentElement;
+    const aiAnalysisSection = document.getElementById('aiAnalysis');
+    const aiAnalysisContent = document.getElementById('aiAnalysisContent');
+
+    function initTheme() {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      if (savedTheme === 'dark') {
+        html.setAttribute('data-theme', 'dark');
+        themeIcon.classList.replace('fa-moon', 'fa-sun');
+      }
+    }
+
+    themeToggle.addEventListener('click', () => {
+      if (html.getAttribute('data-theme') === 'dark') {
+        html.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'light');
+        themeIcon.classList.replace('fa-sun', 'fa-moon');
+      } else {
+        html.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        themeIcon.classList.replace('fa-moon', 'fa-sun');
+      }
+    });
+
+    fileInput.addEventListener('change', handleFileSelect);
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      fileUploadLabel.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      fileUploadLabel.addEventListener(eventName, highlight, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      fileUploadLabel.addEventListener(eventName, unhighlight, false);
+    });
+
+    function highlight() {
+      fileUploadLabel.classList.add('drag-over');
+    }
+
+    function unhighlight() {
+      fileUploadLabel.classList.remove('drag-over');
+    }
+
+    fileUploadLabel.addEventListener('drop', handleDrop, false);
+
+    function handleDrop(e) {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      if (files.length) {
+        fileInput.files = files;
+        handleFileSelect({ target: fileInput });
+      }
+    }
+
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (file) {
+        // Reset analysis results
+        aiAnalysisSection.style.display = 'none';
+        aiAnalysisContent.innerHTML = '';
+        showResponse('', '');
+
+        const validTypes = ['application/pdf', 'application/msword', 
+                           'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+        if (!validTypes.includes(file.type)) {
+          showResponse('Please upload a PDF or Word document', 'error');
+          resetFileInput();
+          return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+          showResponse('File size should be less than 5MB', 'error');
+          resetFileInput();
+          return;
+        }
+
+        fileName.textContent = file.name;
+        fileInfo.style.display = 'block';
+        showResponse('', '');
+      }
+    }
+
+    removeFileBtn.addEventListener('click', resetFileInput);
+
+    function resetFileInput() {
+      fileInput.value = '';
+      fileInfo.style.display = 'none';
+      reuploadBtn.style.display = 'none';
+      submitBtn.style.display = 'flex';
+      aiAnalysisSection.style.display = 'none';
+      aiAnalysisContent.innerHTML = '';
+    }
+
+    reuploadBtn.addEventListener('click', () => {
+      resetFileInput();
+      fileInput.click();
+    });
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const file = fileInput.files[0];
+
+      if (!file) {
+        showResponse('Please select a resume file', 'error');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('resume_file', file);
+      formData.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+      aiAnalysisSection.style.display = 'none';
+      aiAnalysisContent.innerHTML = '';
+
+      try {
+        const response = await fetch('/my_resume/', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        });
+
+        const data = await response.json();
+        
+        if (data.ai_response && data.ai_response.error) {
+          showResponse(`Analysis failed: ${data.ai_response.error}`, 'error');
+        } else if (data.ai_response) {
+          showResponse("Resume analysis complete!", 'success');
+          displayAnalysis(data.ai_response);
+        } else {
+          showResponse("Upload failed. Please try again.", 'error');
+        }
+      } catch (error) {
+        console.error('Upload error:', error);
+        showResponse('An unexpected error occurred. Please try again.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-upload"></i> Upload Resume';
+      }
+    });
+
+    
+    function displayAnalysis(analysis) {
+        let html = '';
+
+       
+        html += `<div class="analysis-section"><h4>Overall Summary</h4><p>${analysis.summary}</p></div>`;
+        html += `<div class="analysis-section"><h4>Experience Level</h4><p>${analysis.experience_level}</p></div>`;
+
+        
+        if (analysis.strengths && analysis.strengths.length > 0) {
+            html += `<div class="analysis-section"><h4>Strengths 💪</h4><ul>`;
+            analysis.strengths.forEach(item => {
+                html += `<li>${item}</li>`;
+            });
+            html += `</ul></div>`;
+        }
+
+        // Improvements
+        if (analysis.improvements && analysis.improvements.length > 0) {
+            html += `<div class="analysis-section"><h4>Improvements 🧐</h4><ul>`;
+            analysis.improvements.forEach(item => {
+                html += `<li>${item}</li>`;
+            });
+            html += `</ul></div>`;
+        }
+
+        
+        if (analysis.skills && analysis.skills.length > 0) {
+            html += `<div class="analysis-section"><h4>Key Skills 🛠️</h4><ul>`;
+            analysis.skills.forEach(item => {
+                html += `<li>${item}</li>`;
+            });
+            html += `</ul></div>`;
+        }
+
+        
+        if (analysis.recommendations) {
+            html += `<div class="analysis-section"><h4>Recommendations 💡</h4><p>${analysis.recommendations}</p></div>`;
+        }
+        
+        aiAnalysisContent.innerHTML = html;
+        aiAnalysisSection.style.display = 'block';
+    }
+
+
+    // Helper function to get CSRF token (for Django)
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    function showResponse(message, type) {
+      responseMessage.textContent = message;
+      responseMessage.className = 'response-message';
+      if (type) {
+        responseMessage.classList.add(type);
+      }
+    }
+
+    initTheme();
+  </script>
+</body>
+</html>

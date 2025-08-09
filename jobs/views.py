@@ -28,7 +28,8 @@ def job_list_view(request):
         jobs = jobs.filter(location__icontains=location)
 
     if category:
-        jobs = jobs.filter(category__name__iexact=category)
+        jobs = jobs.filter(category__id=int(category))
+
 
     jobs = jobs.order_by("-posted_at")
 
@@ -95,10 +96,10 @@ class SaveJobView(View):
 
         saved_job, created = SavedJob.objects.get_or_create(user=user, job=job)
         if created:
-            return JsonResponse({'message': 'Job saved successfully'})
+            return JsonResponse({'message': 'Job saved successfully', 'saved': True})
         else:
             saved_job.delete()
-            return JsonResponse({'message': 'Job unsaved successfully'})
+            return JsonResponse({'message': 'Job unsaved successfully', 'saved': False})
 class CheckSavedStatusView(APIView):
     def get(self, request, job_id):
         session_token = request.headers.get('Session-Token')

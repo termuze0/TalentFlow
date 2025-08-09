@@ -16,7 +16,7 @@
   --hero-label: rgba(240, 240, 240, 0.9);
   --input-bg: rgba(30, 30, 30, 0.95);
   --input-focus: #222;
-  --placeholder: #8d99ae;
+  --placeholder: #edeff3;
   --button-bg: #d12d7d;
   --button-hover: #9e1268;
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
@@ -26,8 +26,7 @@
   background: var(--hero-bg);
   color: var(--hero-text);
   padding: 3rem 2rem;
-  border-radius: 12px;
-  margin: 2rem auto;
+  
   max-width: 1200px;
   box-shadow: var(--shadow);
   transition: all 0.3s ease;
