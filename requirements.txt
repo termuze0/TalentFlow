@@ -16,6 +16,7 @@ pillow==11.3.0
 psycopg2-binary==2.9.10
 pycparser==2.22
 PyJWT==2.10.1
+PyMuPDF==1.26.3
 python-decouple==3.8
 python3-openid==3.2.0
 requests==2.32.4
@@ -24,3 +25,4 @@ social-auth-core==4.7.0
 sqlparse==0.5.3
 tzdata==2025.2
 urllib3==2.5.0
+whitenoise==6.9.0
