@@ -1,10 +1,10 @@
 from django.urls import path
-from .views import RegisterView,LandingPage,LoginView,ProtectedAPIView,UserhomePage,SocialLoginView,UserInfoView,UserProfile
+from .views import RegisterView,LandingPage,LoginView,ProtectedAPIView,UserhomePage,SocialLoginView,UserInfoView,UserProfile,LogoutView
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('login/', LoginView.as_view(), name='login'),
-    
+    path('logout/', LogoutView.as_view(), name='logout'),
     path('protected/', ProtectedAPIView.as_view(), name='protected'),
     path('', LandingPage, name='register'),
     path('home/', UserhomePage, name='home'),
@@ -12,6 +12,4 @@ urlpatterns = [
     path("oauth2/callback/google/", SocialLoginView.as_view()),
     path('user-info/', UserInfoView.as_view(), name='user-info'),
     path('user/profile/', UserProfile.as_view(), name='user_profile'),
-
-
 ]

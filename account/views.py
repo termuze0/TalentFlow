@@ -86,6 +86,26 @@ class LoginView(APIView):
 
         return render(request, 'login.html', {'errors': serializer.errors})
 
+class LogoutView(APIView):
+    def post(self, request):
+        
+        session_token = request.session.get('session_token')
+
+        if session_token:
+            
+            UserSession.objects.filter(session_token=session_token, is_active=True).update(
+                is_active=False,
+                expires_at=timezone.now()
+            )
+
+        
+        request.session.flush()  
+
+        return redirect('/login/')
+    
+    def get(self, request):
+        
+        return self.post(request)
 class UserInfoView(APIView):
     def get(self, request):
         session_token =request.META.get("HTTP_SESSION_TOKEN")

@@ -5,9 +5,6 @@
     <i class="fas fa-bars"></i>
   </button>
   <ul class="nav-links" id="navLinks">
-    <li><a href="{% url 'home' %}">Home</a></li>
-    <li><a href="{% url 'saved-jobs' %}">Jobs</a></li>
-    
   </ul>
 </nav>
 
@@ -15,82 +12,109 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 <script>
-  
-  document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     const token = "{{ session_token|default:'' }}";
     const fullname = "{{ fullname|escapejs }}";
     const navLinks = document.getElementById('navLinks');
     const menuToggle = document.getElementById('menuToggle');
-    
+
     menuToggle.addEventListener('click', function() {
-      navLinks.classList.toggle('active');
+        navLinks.classList.toggle('active');
     });
+
     
     if (token) {
-      localStorage.setItem("session_token", token);
-      localStorage.setItem("fullname", fullname);
+        localStorage.setItem("session_token", token);
+        localStorage.setItem("fullname", fullname);
     }
-    
+
     const localToken = localStorage.getItem("session_token");
     const localFullname = localStorage.getItem("fullname");
-    
+
     if (localToken) {
-      navLinks.innerHTML += `
-        <li><a href="/my-applications/">My Applications</a></li>
-        <li class="profile-menu">
-          <span class="username" id="usernameToggle">${localFullname}</span>
-          <ul class="dropdown" id="profileDropdown">
-            <li><a href="/profile/">Profile</a></li>
-            <li><a href="/settings/">Settings</a></li>
-            <li>
-              <button class="theme-toggle" id="themeToggle">
-                <i class="fas fa-moon"></i> Dark Mode
-              </button>
+        navLinks.innerHTML = `
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'saved-jobs' %}">Jobs</a></li>
+            <li><a href="/my-applications/">My Applications</a></li>
+            <li class="profile-menu">
+                <span class="username" id="usernameToggle">${localFullname}</span>
+                <ul class="dropdown" id="profileDropdown">
+                    <li><a href="{% url 'user_profile'%}">Profile</a></li>
+                    <li><a href="/settings/">Settings</a></li>
+                    <li>
+                        <button class="theme-toggle" id="themeToggle">
+                            <i class="fas fa-moon"></i> Dark Mode
+                        </button>
+                    </li>
+                    <li><a href="#" onclick="logout()">Logout</a></li>
+                </ul>
             </li>
-            <li><a href="#" onclick="logout()">Logout</a></li>
-          </ul>
-        </li>
-      `;
+        `;
     } else {
-      navLinks.innerHTML += `
-        <li><a href="{% url 'login' %}">Login</a></li>
-        <li><a href="{% url 'register' %}">Register</a></li>
-      `;
+        navLinks.innerHTML = `
+            <li><a href="{% url 'login' %}">Login</a></li>
+            <li><a href="{% url 'register' %}">Register</a></li>
+        `;
     }
-    
+
     initDarkMode();
-  });
-  
-  function logout() {
-    localStorage.removeItem("session_token");
-    localStorage.removeItem("fullname");
-    window.location.href = "{% url 'login' %}";
-  }
-  
-  function initDarkMode() {
+});
+
+function logout() {
+    const token = localStorage.getItem("session_token");
+
+    fetch("{% url 'logout' %}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRFToken(),
+        },
+        body: JSON.stringify({ session_token: token })
+    })
+    .finally(() => {
+        localStorage.removeItem("session_token");
+        localStorage.removeItem("fullname");
+        window.location.href = "{% url 'login' %}";
+    });
+}
+
+function getCSRFToken() {
+    const name = 'csrftoken=';
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const cookies = decodedCookie.split(';');
+    for (let cookie of cookies) {
+        cookie = cookie.trim();
+        if (cookie.indexOf(name) === 0) {
+            return cookie.substring(name.length, cookie.length);
+        }
+    }
+    return '';
+}
+
+function initDarkMode() {
     const themeToggle = document.getElementById('themeToggle');
     const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-    
+
     const currentTheme = localStorage.getItem('theme');
     if (currentTheme === 'dark' || (!currentTheme && prefersDarkScheme.matches)) {
-      document.body.classList.add('dark-mode');
-      if (themeToggle) {
-        themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
-      }
-    }
-    
-    if (themeToggle) {
-      themeToggle.addEventListener('click', function() {
-        document.body.classList.toggle('dark-mode');
-        const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
-        localStorage.setItem('theme', theme);
-        
-        if (theme === 'dark') {
-          themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
-        } else {
-          themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+        document.body.classList.add('dark-mode');
+        if (themeToggle) {
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
         }
-      });
     }
-  }
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+            localStorage.setItem('theme', theme);
+
+            if (theme === 'dark') {
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+            } else {
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+            }
+        });
+    }
+}
 </script>
