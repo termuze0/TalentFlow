@@ -102,6 +102,7 @@
     const jobCard = document.createElement('div');
     jobCard.className = 'job';
     jobCard.dataset.jobId = job.id;
+  
     jobCard.innerHTML = `
   <h3>${job.title}</h3>
   <p><strong>Company:</strong> ${job.company || 'Not specified'}</p>
@@ -112,9 +113,6 @@
   </div>
   <div class="job-actions">
     ${job.id ? `<a href="/jobs/${job.id}/" class="view-button">View Details</a>` : '<span class="view-button disabled">View Details (ID missing)</span>'}
-    <a href="${job.applyUrl || '#'}" class="btn btn-primary apply-btn">
-      <i class="fas fa-external-link-alt"></i> Apply Now
-    </a>
     <button class="btn btn-danger remove-btn" data-job-id="${job.id || ''}">
       <i class="far fa-trash-alt"></i> Remove
     </button>

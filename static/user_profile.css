@@ -78,77 +78,63 @@ h1 {
   transition: var(--transition);
 }
 
-.profile-header {
+profile-header {
   display: flex;
-  align-items: center;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
-  gap: 30px;
-}
-
-.profile-header {
-  display: flex;
+  justify-content: center;
   align-items: center;
   padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
-  max-width: 400px;
-  margin: 0 auto;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: #f5f7fa; 
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  margin: 20px auto;
+  max-width: 600px; 
 }
+
 
 .profile-picture-container {
   position: relative;
-  width: 120px;
-  height: 120px;
-  flex-shrink: 0;
-  border-radius: 50%;
+  width: 150px; 
+  height: 150px;
+  border-radius: 50%; 
   overflow: hidden;
-  box-shadow: 0 0 8px rgba(0,0,0,0.1);
-  cursor: pointer;
-  background-color: #ddd;
-  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+  transition: transform 0.3s ease; 
+}
+
+.profile-picture-container:hover {
+  transform: scale(1.05); 
 }
 
 .profile-picture {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  display: block;
-  border-radius: 50%;
-  transition: filter 0.3s ease;
+  object-fit: cover; 
+  border: 3px solid #ffffff; 
+  border-radius: 50%; 
 }
 
 .profile-picture-edit {
   position: absolute;
-  bottom: 6px;
-  right: 6px;
-  background-color: rgba(0, 0, 0, 0.6);
-  color: white;
-  width: 32px;
-  height: 32px;
+  bottom: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.6); 
+  color: #ffffff; 
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
-  align-items: center;
   justify-content: center;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .profile-picture-edit:hover {
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.8); 
+  transform: scale(1.1); 
 }
 
-.profile-picture-container:hover {
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
-}
-
-.profile-picture-container:hover .profile-picture-edit {
-    opacity: 1; 
-    transform: scale(1.1) rotate(5deg);
-    background-color: var(--primary-color);
-    animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+.profile-picture-edit i {
+  font-size: 18px; 
 }
 
 @keyframes bounceIn {

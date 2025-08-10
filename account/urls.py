@@ -6,7 +6,7 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('protected/', ProtectedAPIView.as_view(), name='protected'),
-    path('', LandingPage, name='register'),
+    path('', LandingPage, name='landing'),
     path('home/', UserhomePage, name='home'),
     path("social-login/", SocialLoginView.as_view(), name="social_login"),
     path("oauth2/callback/google/", SocialLoginView.as_view()),

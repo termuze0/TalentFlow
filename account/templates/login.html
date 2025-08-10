@@ -10,8 +10,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Montserrat:wght@400;500;600;700&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 <body>
@@ -22,11 +21,23 @@
         <p class="social-login-subtitle">Sign in to continue to your account</p>
       </div>
 
-      <!-- ✅ Fixed closing tag -->
-      <div id="error-container" class="error-messages" style="display: none;"></div>
+
+      {% if error %}
+      <div class="error-messages">{{ error }}</div>
+      {% endif %}
+
+      {% if errors %}
+      <div class="error-messages">
+        {% for field, field_errors in errors.items %}
+        {% for e in field_errors %}
+        <p>{{ e }}</p>
+        {% endfor %}
+        {% endfor %}
+      </div>
+      {% endif %}
 
       <form id="loginForm" class="social-login-form" method="POST" action="{% url 'login' %}">
-  {% csrf_token %}
+        {% csrf_token %}
 
         <div class="form-group">
           <label for="email" class="form-label">Email Address</label>
@@ -81,7 +92,7 @@
     </div>
   </div>
 
- 
+
 </body>
 
 </html>
